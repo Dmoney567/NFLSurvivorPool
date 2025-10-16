@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const email = document.getElementById("loginEmail").value.trim();
+    const email = document.getElementById("loginEmail").value.trim(); 
     const password = document.getElementById("loginPassword").value.trim();
 
     if (!email || !password) {
