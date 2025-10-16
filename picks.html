@@ -1,37 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Make Pick - Survivor Pool</title>  
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Make Your Pick - Survivor Pool</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-    <header>
-        <h1>Make Your Pick</h1>
-        <nav> 
-            <a href="dashboard.html">Dashboard</a>
-            <a href="standings.html">Standings</a>
-            <a href="index.html">Logout</a>
-        </nav>
-    </header>
-    <main>
-        <table id="gamesTable">
-            <thead>
-                <tr>
-                    <th>Home Team</th>
-                    <th>Away Team</th>
-                    <th>Pick</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Placeholder games -->
-            </tbody>
-        </table>
-        <button id="submitPick">Submit Pick</button>
-        <p id="pickMessage"></p>
-    </main>
-    <script src="js/picks.js"></script>
+  <header>
+    <h1>NFL Survivor Pool</h1>
+    <nav>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="picks.html" class="active">Picks</a>
+      <a href="standings.html">Standings</a>
+      <a href="index.html">Logout</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Make Your Pick</h2>
+    <p>Select your team for this week. You may only choose one team.</p>
+    <div id="teamsContainer" class="teams-container"></div>
+    <button id="submitPickBtn" disabled>Submit Pick</button>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 NFL Survivor Pool</p>
+  </footer>
+
+  <script src="js/picks.js"></script>
 </body>
 </html>
-
