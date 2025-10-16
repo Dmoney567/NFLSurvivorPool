@@ -1,27 +1,51 @@
-// Example matchups for the week (you'll later load this from your admin page)
-const matchups = [
-  { home: "Lions", away: "Packers", spread: "-3.5" },
-  { home: "Chiefs", away: "Broncos", spread: "-7" },
-  { home: "Bills", away: "Dolphins", spread: "-2.5" },
-  { home: "49ers", away: "Cowboys", spread: "-4" },
-  { home: "Eagles", away: "Giants", spread: "-5.5" },
-  { home: "Ravens", away: "Steelers", spread: "-3" },
-  { home: "Bengals", away: "Browns", spread: "-2" },
-  { home: "Vikings", away: "Bears", spread: "-1.5" }
-];
+document.addEventListener("DOMContentLoaded", () => {
+  const container = document.getElementById("matchupsContainer");
+  const submitBtn = document.getElementById("submitPickBtn");
 
-const container = document.getElementById("matchupsContainer");
-const submitBtn = document.getElementById("submitPickBtn");
-let selectedTeam = null;
+  // Load matchups from admin page (localStorage)
+  const matchups = JSON.parse(localStorage.getItem("matchups")) || [];
 
-// Build matchup rows
-matchups.forEach(({ home, away, spread }) => {
-  const row = document.createElement("div");
-  row.classList.add("matchup-row");
+  let selectedTeam = null;
+  container.innerHTML = ""; // clear container
 
-  const homeBtn = document.createElement("button");
-  homeBtn.textContent = home;
-  homeBtn.classList.add("team-btn");
+  if (matchups.length === 0) {
+    container.innerHTML = "<p>No matchups available. Please check back later.</p>";
+    submitBtn.disabled = true;
+    return;
+  }
 
-  const vsLabel = document.createElement("span");
-  vsLabel.textContent = ` @ ${away} (${spread})`; // shows " @ Tea
+  // Build matchup buttons
+  matchups.forEach(({ home, away, spread }) => {
+    const row = document.createElement("div");
+    row.classList.add("matchup-row");
+
+    const homeBtn = document.createElement("button");
+    homeBtn.textContent = `${home} (${spread})`;
+    homeBtn.classList.add("team-btn");
+
+    const vsLabel = document.createElement("span");
+    vsLabel.textContent = "@";
+
+    const awayBtn = document.createElement("button");
+    awayBtn.textContent = away;
+    awayBtn.classList.add("team-btn");
+
+    [homeBtn, awayBtn].forEach((btn) => {
+      btn.addEventListener("click", () => {
+        // Clear other selections
+        document.querySelectorAll(".team-btn").forEach((b) => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        selectedTeam = btn.textContent;
+        submitBtn.disabled = false;
+      });
+    });
+
+    row.appendChild(homeBtn);
+    row.appendChild(vsLabel);
+    row.appendChild(awayBtn);
+    container.appendChild(row);
+  });
+
+  submitBtn.addEventListener("click", () => {
+    if (!selectedTeam) return;
+    alert(`✅ You picked: ${
