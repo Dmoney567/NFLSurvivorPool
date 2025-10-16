@@ -6,7 +6,7 @@ const games = [
 
 const tbody = document.querySelector('#gamesTable tbody');
 
-games.forEach((game, index) => {
+games.forEach((game, index) => { 
     const row = document.createElement('tr');
     row.innerHTML = `
         <td>${game.home}</td>
