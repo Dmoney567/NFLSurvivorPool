@@ -1,25 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <title>Dashboard - Survivor Pool</title>
-    <link rel="stylesheet" href="css/style.css">
-</head> 
-<body> 
-    <header>
-        <h1>Welcome, User!</h1>
-        <nav>
-            <a href="picks.html">Make Pick</a>
-            <a href="standings.html">Standings</a>
-            <a href="admin.html">Admin</a> 
-            <a href="index.html">Logout</a>
-        </nav>
-    </header>
-    <main>
-        <h2>This Week's Pick</h2>
-        <p id="currentPick">You haven't made a pick yet.</p>
-    </main>
-    <script src="js/dashboard.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Survivor Pool</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Survivor Pool Dashboard</h1>
+    <nav>
+      <a href="dashboard.html" class="active">Dashboard</a>
+      <a href="picks.html">Make Pick</a>
+      <a href="standings.html">Standings</a>
+      <a href="admin.html">Admin</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2 id="welcomeMessage"></h2>
+    <p class="dashboard-subtitle">Your weekly hub for picks, standings, and updates.</p>
+
+    <div class="dashboard-buttons">
+      <a href="picks.html" class="dashboard-card">
+        <h3>🏈 Make Your Pick</h3>
+        <p>Submit your team for this week.</p>
+      </a>
+
+      <a href="standings.html" class="dashboard-card">
+        <h3>📊 View Standings</h3>
+        <p>See how everyone ranks.</p>
+      </a>
+
+      <a href="admin.html" class="dashboard-card">
+        <h3>⚙️ Admin Panel</h3>
+        <p>Update weekly matchups and results.</p>
+      </a>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 NFL Survivor Pool</p>
+  </footer>
+
+  <script src="js/dashboard.js"></script>
 </body>
 </html>
