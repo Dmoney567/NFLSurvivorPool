@@ -1,39 +1,48 @@
-// Global variable to store current logged-in email (demo)
-let currentUserEmail = "";
-
 // Hardcoded list of admin emails
 const adminEmails = ["dominic.ateek@yahoo.com", "youremail@example.com"];
 
-// Login button
-document.getElementById('loginBtn').addEventListener('click', () => {
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value; 
+// LOGIN BUTTON
+document.getElementById("loginBtn").addEventListener("click", () => {
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
 
-    currentUserEmail = email; // save the email 
+  if (!email || !password) {
+    alert("Please enter both email and password.");
+    return;
+  }
 
-    alert(`Logged in as ${email} (demo, no backend yet)`);
+  // Save the current user email in localStorage
+  localStorage.setItem("currentUserEmail", email);
 
-    // Redirect based on admin or regular user
-    if(adminEmails.includes(email)){
-        window.location.href = 'admin.html';
-    } else {
-        window.location.href = 'dashboard.html';
-    }
+  alert(`Logged in as ${email} (demo, no backend yet)`);
+
+  // Redirect based on user type
+  if (adminEmails.includes(email)) {
+    window.location.href = "admin.html";
+  } else {
+    window.location.href = "dashboard.html";
+  }
 });
 
-// Register button
-document.getElementById('registerBtn').addEventListener('click', () => {
-    const email = document.getElementById('registerEmail').value;
-    const password = document.getElementById('registerPassword').value;
+// REGISTER BUTTON
+document.getElementById("registerBtn").addEventListener("click", () => {
+  const email = document.getElementById("registerEmail").value.trim();
+  const password = document.getElementById("registerPassword").value.trim();
 
-    currentUserEmail = email; // save the email
+  if (!email || !password) {
+    alert("Please enter both email and password.");
+    return;
+  }
 
-    alert(`Registered as ${email} (demo, no backend yet)`);
+  // Save the current user email in localStorage
+  localStorage.setItem("currentUserEmail", email);
 
-    // Redirect based on admin or regular user
-    if(adminEmails.includes(email)){
-        window.location.href = 'admin.html';
-    } else {
-        window.location.href = 'dashboard.html';
-    }
+  alert(`Registered as ${email} (demo, no backend yet)`);
+
+  // Redirect based on user type
+  if (adminEmails.includes(email)) {
+    window.location.href = "admin.html";
+  } else {
+    window.location.href = "dashboard.html";
+  }
 });
