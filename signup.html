@@ -3,26 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sign Up - Survivor Pool</title>
+  <title>Login - Survivor Pool</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body class="login-body">
   <div class="login-container">
     <h1>NFL Survivor Pool</h1>
-    <h2>Create Account</h2> 
+    <h2>Login</h2>
 
-    <form id="signupForm">
-      <input type="text" id="newUsername" placeholder="Choose a Username" required />
-      <input type="password" id="newPassword" placeholder="Create a Password" required />
-      <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
-      <button type="submit">Sign Up</button>
+    <form id="loginForm">
+      <input type="email" id="loginEmail" placeholder="Email" required />
+      <input type="password" id="loginPassword" placeholder="Password" required />
+      <button type="submit">Login</button>
     </form>
 
     <p class="login-note">
-      Already have an account? <a href="index.html" class="link">Login here</a>
+      Don’t have an account? <a href="signup.html" class="link">Sign up here</a>
     </p>
   </div>
 
-  <script src="js/signup.js"></script>
+  <script src="js/login.js"></script>
 </body>
 </html>
