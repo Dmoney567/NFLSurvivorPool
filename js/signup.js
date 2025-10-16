@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const email = document.getElementById("newEmail").value.trim();
     const password = document.getElementById("newPassword").value.trim();
     const confirm = document.getElementById("confirmPassword").value.trim();
-
+ 
     if (!firstName || !lastName || !phoneNumber || !email || !password) {
       alert("Please fill in all fields.");
       return;
