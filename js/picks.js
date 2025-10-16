@@ -1,56 +1,54 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // Try to load weekly games from admin page
-  const storedGames = localStorage.getItem("weeklyGames");
-  let games = [];
+// Example matchups for the week
+const matchups = [
+  { home: "Lions", away: "Packers" },
+  { home: "Chiefs", away: "Broncos" },
+  { home: "Bills", away: "Dolphins" },
+  { home: "49ers", away: "Cowboys" },
+  { home: "Eagles", away: "Giants" },
+  { home: "Ravens", away: "Steelers" },
+  { home: "Bengals", away: "Browns" },
+  { home: "Vikings", away: "Bears" }
+];
 
-  if (storedGames) {
-    games = JSON.parse(storedGames);
-  } else {
-    // Fallback example list if no admin games found
-    games = [
-      { home: "Packers", away: "Bears" },
-      { home: "Cowboys", away: "Giants" },
-      { home: "Chiefs", away: "Raiders" },
-    ];
-  }
+const container = document.getElementById("matchupsContainer");
+const submitBtn = document.getElementById("submitPickBtn");
+let selectedTeam = null;
 
-  // Reference to the table body
-  const tbody = document.querySelector("#gamesTable tbody");
+// Build matchup buttons
+matchups.forEach(({ home, away }) => {
+  const row = document.createElement("div");
+  row.classList.add("matchup-row");
 
-  // Populate the table with games
-  games.forEach((game, index) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-        <td>${game.home}</td>
-        <td>${game.away}</td>
-        <td>
-            <select id="pick${index}">
-                <option value="">Select</option>
-                <option value="${game.home}">${game.home}</option>
-                <option value="${game.away}">${game.away}</option>
-            </select>
-        </td>
-    `;
-    tbody.appendChild(row);
+  const homeBtn = document.createElement("button");
+  homeBtn.textContent = home;
+  homeBtn.classList.add("team-btn");
+
+  const vsLabel = document.createElement("span");
+  vsLabel.textContent = "vs";
+
+  const awayBtn = document.createElement("button");
+  awayBtn.textContent = away;
+  awayBtn.classList.add("team-btn");
+
+  [homeBtn, awayBtn].forEach(btn => {
+    btn.addEventListener("click", () => {
+      // Remove all other selections
+      document.querySelectorAll(".team-btn").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+      selectedTeam = btn.textContent;
+      submitBtn.disabled = false;
+    });
   });
 
-  // Handle pick submission
-  document.getElementById("submitPick").addEventListener("click", () => {
-    const picks = games.map(
-      (game, i) => document.getElementById(`pick${i}`).value
-    );
+  row.appendChild(homeBtn);
+  row.appendChild(vsLabel);
+  row.appendChild(awayBtn);
+  container.appendChild(row);
+});
 
-    const message = document.getElementById("pickMessage");
-
-    if (picks.includes("")) {
-      message.textContent = "Please pick a team for all games!";
-      message.style.color = "red";
-    } else {
-      message.textContent = `✅ Your picks: ${picks.join(", ")}`;
-      message.style.color = "green";
-
-      // Save the user's first pick (to display on dashboard)
-      localStorage.setItem("userPick", picks[0]);
-    }
-  });
+submitBtn.addEventListener("click", () => {
+  if (!selectedTeam) return;
+  alert(`You picked: ${selectedTeam}`);
+  submitBtn.disabled = true;
+  document.querySelectorAll(".team-btn").forEach(b => (b.disabled = true));
 });
