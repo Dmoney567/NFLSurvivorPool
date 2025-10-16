@@ -9,14 +9,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Display personalized welcome
   const welcomeMsg = document.getElementById("welcomeMessage");
-  welcomeMsg.textContent = `Welcome, ${currentUser.split("@")[0]}! 👋`;
+  if (welcomeMsg) {
+    welcomeMsg.textContent = `Welcome, ${currentUser.split("@")[0]}! 👋`;
+  }
 
   // Logout button clears localStorage and redirects
   const logoutBtn = document.getElementById("logoutBtn");
-  logoutBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    localStorage.removeItem("currentUserEmail");
-    alert("You’ve been logged out.");
-    window.location.href = "index.html";
-  });
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      localStorage.removeItem("currentUserEmail");
+      alert("You’ve been logged out.");
+      window.location.href = "index.html";
+    });
+  }
 });
