@@ -2,9 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Hardcoded list of admin emails
   const adminEmails = ["dominic.ateek@yahoo.com", "kroifyatoma@yahoo.com"];
 
-  // Get the login form
   const form = document.getElementById("loginForm");
-  if (!form) return; // Prevents errors if form isn't found
+  if (!form) return;
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -17,28 +16,27 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Retrieve saved users (from signup)
     const users = JSON.parse(localStorage.getItem("users")) || [];
 
-    // Check if user exists
     const validUser = users.find(
-      (user) =>
-        (user.username === email || user.email === email) &&
-        user.password === password
+      (user) => user.email === email && user.password === password
     );
 
-    // Reject if not found and not an admin
     if (!validUser && !adminEmails.includes(email)) {
       alert("❌ Invalid credentials. Please try again or sign up.");
       return;
     }
 
-    // Save current user
+    // Save logged-in user info
     localStorage.setItem("currentUserEmail", email);
+
+    // Store first name for personalized greeting
+    if (validUser && validUser.firstName) {
+      localStorage.setItem("currentUserFirstName", validUser.firstName);
+    }
 
     alert(`✅ Logged in as ${email}`);
 
-    // Redirect based on role
     if (adminEmails.includes(email)) {
       window.location.href = "admin.html";
     } else {
