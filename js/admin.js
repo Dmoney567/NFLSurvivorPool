@@ -41,6 +41,11 @@ saveGamesBtn.addEventListener("click", () => {
     const [home, away, spread] = [...inputs].map(i => i.value.trim());
     if (home && away) updatedGames.push({ home, away, spread });
   });
+  addGameBtn.addEventListener("click", () => {
+  savedGames.push({ home: "", away: "", spread: "" });
+  renderTable(savedGames);
+});
+
 
   localStorage.setItem("matchups", JSON.stringify(updatedGames));
   alert("✅ Matchups saved successfully!");
