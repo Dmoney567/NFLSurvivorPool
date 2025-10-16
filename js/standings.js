@@ -9,7 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ✅ Show welcome message
   const welcomeMsg = document.getElementById("welcomeMessage");
-  welcomeMsg.textContent = `Welcome, ${currentUser}`;
+  if (welcomeMsg) {
+    welcomeMsg.textContent = `Welcome, ${currentUser}`;
+  }
 
   // ✅ Example standings data (replace later with backend data)
   const standings = [
@@ -23,12 +25,12 @@ document.addEventListener("DOMContentLoaded", () => {
   standings.sort((a, b) => b.wins - a.wins);
 
   const tbody = document.querySelector("#standingsTable tbody");
+  if (!tbody) return; // Prevents "null" errors if table is missing
 
   // ✅ Populate table
   standings.forEach((player, index) => {
     const row = document.createElement("tr");
 
-    // Highlight the current user
     const isCurrentUser = currentUser.toLowerCase().includes(
       player.player.toLowerCase().split(" ")[0]
     );
