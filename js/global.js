@@ -1,7 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
   const logoutBtn = document.getElementById("logoutBtn");
 
-  // If a logout button exists on this page, make it work
+  // Get logged-in user once at the top
+  const loggedInUser = localStorage.getItem("currentUserEmail");
+
+  // Hide logout button if no one is logged in
+  if (!loggedInUser && logoutBtn) {
+    logoutBtn.style.display = "none";
+  }
+
+  // Make logout button work if it exists
   if (logoutBtn) {
     logoutBtn.addEventListener("click", (e) => {
       e.preventDefault();
@@ -14,11 +22,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Optional: Redirect if not logged in
+  // Redirect protection: block access to pages if not logged in
   const protectedPages = ["dashboard.html", "picks.html", "standings.html", "admin.html"];
   const currentPage = window.location.pathname.split("/").pop();
-  const loggedInUser = localStorage.getItem("currentUserEmail");
 
   if (protectedPages.includes(currentPage) && !loggedInUser) {
     alert("Please log in first.");
     window.location.href = "index.html";
+  }
+});
