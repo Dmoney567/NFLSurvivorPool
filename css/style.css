@@ -197,5 +197,90 @@ main h2 {
 #saveGamesBtn:hover {
   background-color: #218838;
 }
+/* ---------- LOGIN PAGE ---------- */
+.login-body {
+  background: linear-gradient(135deg, #002855, #0059b3);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  color: #fff;
+}
+
+.login-container {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  padding: 40px 50px;
+  width: 320px;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.8s ease-out;
+}
+
+.login-container h1 {
+  font-size: 1.8em;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.login-container h2 {
+  font-size: 1.3em;
+  color: #cce0ff;
+  margin-bottom: 25px;
+}
+
+.login-container input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 8px;
+  outline: none;
+  font-size: 1em;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.login-container input:focus {
+  background-color: #e6f0ff;
+  transform: scale(1.03);
+}
+
+.login-container button {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1em;
+  margin-top: 10px;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.login-container button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+.login-note {
+  margin-top: 15px;
+  font-size: 0.9em;
+  color: #cce0ff;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 
