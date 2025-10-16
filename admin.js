@@ -4,7 +4,7 @@ const adminEmails = ["dominic.ateek@yahoo.com", "youremail@example.com"];
 // Check if user is authorized to access admin page
 if(!adminEmails.includes(currentUserEmail)){
     alert("You are not authorized to access this page!");
-    window.location.href = "dashboard.html"; // redirect non-admins
+    window.location.href = "dashboard.html"; // redirect non-admins 
 }
 
 // Placeholder admin games
