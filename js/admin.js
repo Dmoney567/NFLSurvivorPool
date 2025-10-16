@@ -1,68 +1,47 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // Hardcoded list of admins
-  const adminEmails = ["dominic.ateek@yahoo.com", "youremail@example.com"];
+const tableBody = document.getElementById("gamesTableBody");
+const addGameBtn = document.getElementById("addGameBtn");
+const saveGamesBtn = document.getElementById("saveGamesBtn");
 
-  // Get current user
-  const currentUserEmail = localStorage.getItem("currentUserEmail");
+// Load saved games if available
+const savedGames = JSON.parse(localStorage.getItem("matchups")) || [];
+renderTable(savedGames);
 
-  // Check authorization
-  if (!adminEmails.includes(currentUserEmail)) {
-    alert("You are not authorized to access this page!");
-    window.location.href = "dashboard.html";
-    return;
+function renderTable(games) {
+  tableBody.innerHTML = "";
+  games.forEach((game, index) => {
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td><input type="text" value="${game.home}" placeholder="Home Team"></td>
+      <td><input type="text" value="${game.away}" placeholder="Away Team"></td>
+      <td><input type="text" value="${game.spread}" placeholder="Spread (e.g., -3.5)"></td>
+      <td><button class="deleteBtn" data-index="${index}">❌ Delete</button></td>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+
+addGameBtn.addEventListener("click", () => {
+  savedGames.push({ home: "", away: "", spread: "" });
+  renderTable(savedGames);
+});
+
+tableBody.addEventListener("click", e => {
+  if (e.target.classList.contains("deleteBtn")) {
+    const idx = e.target.dataset.index;
+    savedGames.splice(idx, 1);
+    renderTable(savedGames);
   }
+});
 
-  const tbody = document.querySelector("#adminGamesTable tbody");
-  const addGameBtn = document.getElementById("addGameBtn");
-  const saveGamesBtn = document.getElementById("saveGamesBtn");
-  const messageEl = document.getElementById("adminMessage");
-
-  // Load existing games if any
-  let adminGames = JSON.parse(localStorage.getItem("weeklyGames")) || [
-    { home: "Packers", away: "Bears", winner: "" },
-    { home: "Cowboys", away: "Giants", winner: "" },
-  ];
-
-  // Function to render table
-  function renderGames() {
-    tbody.innerHTML = "";
-    adminGames.forEach((game, index) => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td><input type="text" id="home${index}" value="${game.home}" placeholder="Home Team"></td>
-        <td><input type="text" id="away${index}" value="${game.away}" placeholder="Away Team"></td>
-        <td>
-          <select id="winner${index}">
-            <option value="">Select Winner</option>
-            <option value="${game.home}">${game.home}</option>
-            <option value="${game.away}">${game.away}</option>
-          </select>
-        </td>
-      `;
-      tbody.appendChild(row);
-    });
-  }
-
-  renderGames();
-
-  // Add new game row
-  addGameBtn.addEventListener("click", () => {
-    adminGames.push({ home: "", away: "", winner: "" });
-    renderGames();
+saveGamesBtn.addEventListener("click", () => {
+  const updatedGames = [];
+  tableBody.querySelectorAll("tr").forEach(row => {
+    const inputs = row.querySelectorAll("input");
+    const [home, away, spread] = [...inputs].map(i => i.value.trim());
+    if (home && away) updatedGames.push({ home, away, spread });
   });
 
-  // Save games to localStorage
-  saveGamesBtn.addEventListener("click", () => {
-    // Update array with current input values
-    adminGames = adminGames.map((game, index) => ({
-      home: document.getElementById(`home${index}`).value.trim() || "TBD",
-      away: document.getElementById(`away${index}`).value.trim() || "TBD",
-      winner: document.getElementById(`winner${index}`).value.trim(),
-    }));
-
-    localStorage.setItem("weeklyGames", JSON.stringify(adminGames));
-
-    messageEl.textContent = "✅ Games saved successfully! They will appear on the Picks page.";
-    messageEl.style.color = "green";
-  });
+  localStorage.setItem("matchups", JSON.stringify(updatedGames));
+  alert("✅ Matchups saved successfully!");
 });
