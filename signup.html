@@ -23,25 +23,6 @@
     </p>
   </div>
 
-  <script>
-    document.getElementById("signupForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const username = document.getElementById("newUsername").value.trim();
-      const password = document.getElementById("newPassword").value.trim();
-      const confirm = document.getElementById("confirmPassword").value.trim();
-
-      if (password !== confirm) {
-        alert("❌ Passwords do not match!");
-        return;
-      }
-
-      const users = JSON.parse(localStorage.getItem("users")) || [];
-
-      // Check if username already exists
-      if (users.some((user) => user.username === username)) {
-        alert("⚠️ Username already taken. Try another.");
-        return;
-      }
-
-      users.push({ username, password });
-      localStorage.setItem("users", JSON.stringify(users));
+  <script src="js/signup.js"></script>
+</body>
+</html>
