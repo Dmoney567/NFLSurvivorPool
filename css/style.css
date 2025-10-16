@@ -297,5 +297,40 @@ main h2 {
 .login-container input[type="text"] {
   background-color: #f9f9f9;
 }
+/* ---------- STANDINGS TABLE ---------- */
+#standingsTable {
+  width: 80%;
+  margin: 0 auto 40px;
+  border-collapse: collapse;
+  font-size: 1em;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+#standingsTable thead {
+  background-color: #004080;
+  color: white;
+}
+
+#standingsTable th, 
+#standingsTable td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+#standingsTable tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+#standingsTable tbody tr:nth-child(odd) {
+  background-color: #fff;
+}
+
+#standingsTable tbody tr:hover {
+  background-color: #e8f0ff;
+  cursor: default;
+}
 
 
