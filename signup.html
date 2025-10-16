@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up - Survivor Pool</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="login-body">
+  <div class="login-container">
+    <h1>NFL Survivor Pool</h1>
+    <h2>Create Account</h2>
+
+    <form id="signupForm">
+      <input type="text" id="newUsername" placeholder="Choose a Username" required />
+      <input type="password" id="newPassword" placeholder="Create a Password" required />
+      <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
+      <button type="submit">Sign Up</button>
+    </form>
+
+    <p class="login-note">
+      Already have an account? <a href="index.html" class="link">Login here</a>
+    </p>
+  </div>
+
+  <script>
+    document.getElementById("signupForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const username = document.getElementById("newUsername").value.trim();
+      const password = document.getElementById("newPassword").value.trim();
+      const confirm = document.getElementById("confirmPassword").value.trim();
+
+      if (password !== confirm) {
+        alert("❌ Passwords do not match!");
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+
+      // Check if username already exists
+      if (users.some((user) => user.username === username)) {
+        alert("⚠️ Username already taken. Try another.");
+        return;
+      }
+
+      users.push({ username, password });
+      localStorage.setItem("users", JSON.stringify(users));
