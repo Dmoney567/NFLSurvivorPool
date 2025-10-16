@@ -1,7 +1,7 @@
 const games = [
     {home: 'Packers', away: 'Bears'},
     {home: 'Cowboys', away: 'Giants'},
-    {home: 'Chiefs', away: 'Raiders'}, 
+    {home: 'Chiefs', away: 'Raiders'},  
 ];
 
 const tbody = document.querySelector('#gamesTable tbody');
