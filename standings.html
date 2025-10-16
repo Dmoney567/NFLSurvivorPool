@@ -5,32 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Standings - Survivor Pool</title>
     <link rel="stylesheet" href="css/style.css">
-</head>  
+</head>
 <body>
     <header>
-        <h1>Standings</h1>
+        <h1>Current Standings</h1>
         <nav>
             <a href="dashboard.html">Dashboard</a>
             <a href="picks.html">Make Pick</a>
+            <a href="admin.html">Admin</a>
             <a href="index.html">Logout</a>
         </nav>
     </header>
+
     <main>
+        <h2>Leaderboard</h2>
         <table id="standingsTable">
             <thead>
                 <tr>
+                    <th>Rank</th>
                     <th>Player</th>
                     <th>Wins</th>
                     <th>Losses</th>
-                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Placeholder standings -->
+                <!-- JS will populate this -->
             </tbody>
         </table>
     </main>
+
     <script src="js/standings.js"></script>
 </body>
 </html>
-
