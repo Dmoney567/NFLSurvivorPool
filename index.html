@@ -12,31 +12,16 @@
     <h2>Login</h2>
 
     <form id="loginForm">
-      <input type="text" id="username" placeholder="Username" required />
-      <input type="password" id="password" placeholder="Password" required />
+      <input type="email" id="loginEmail" placeholder="Email" required />
+      <input type="password" id="loginPassword" placeholder="Password" required />
       <button type="submit">Login</button>
     </form>
-<p class="login-note">
-  Don't have an account? <a href="signup.html" class="link">Sign up here</a>
-</p>
 
-    <p class="login-note">Only authorized users can access the Admin Panel.</p>
+    <p class="login-note">
+      Don’t have an account? <a href="signup.html" class="link">Sign up here</a>
+    </p>
   </div>
 
-  <script>
-    // Simple example login (replace with real authentication later)
-    document.getElementById("loginForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
-
-      if (username === "admin" && password === "password123") {
-        alert("✅ Welcome, Admin!");
-        window.location.href = "dashboard.html";
-      } else {
-        alert("❌ Invalid credentials.");
-      }
-    });
-  </script>
+  <script src="js/login.js"></script>
 </body>
 </html>
