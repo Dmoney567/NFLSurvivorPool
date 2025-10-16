@@ -1,22 +1,22 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Retrieve logged-in user's email (if saved from login.js)
-    const currentUserEmail = localStorage.getItem('currentUserEmail');
+  // Check if user is logged in
+  const currentUser = localStorage.getItem("currentUserEmail");
+  if (!currentUser) {
+    alert("Please log in first.");
+    window.location.href = "index.html";
+    return;
+  }
 
-    // Greet the user
-    const headerTitle = document.querySelector("header h1");
-    if (currentUserEmail) {
-        headerTitle.textContent = `Welcome, ${currentUserEmail}!`;
-    } else {
-        headerTitle.textContent = "Welcome, Guest!";
-    }
+  // Display personalized welcome
+  const welcomeMsg = document.getElementById("welcomeMessage");
+  welcomeMsg.textContent = `Welcome, ${currentUser.split("@")[0]}! 👋`;
 
-    // Placeholder: Retrieve current pick (saved in localStorage)
-    const savedPick = localStorage.getItem('userPick');
-    const pickDisplay = document.getElementById('currentPick');
-
-    if (savedPick) {
-        pickDisplay.textContent = `You picked the ${savedPick} this week!`;
-    } else {
-        pickDisplay.textContent = "You haven't made a pick yet.";
-    }
+  // Logout button clears localStorage and redirects
+  const logoutBtn = document.getElementById("logoutBtn");
+  logoutBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    localStorage.removeItem("currentUserEmail");
+    alert("You’ve been logged out.");
+    window.location.href = "index.html";
+  });
 });
