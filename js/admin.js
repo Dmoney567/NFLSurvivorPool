@@ -1,35 +1,36 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Hardcoded list of admins (must match login.js)
+  // Hardcoded list of admins
   const adminEmails = ["dominic.ateek@yahoo.com", "youremail@example.com"];
 
-  // Retrieve logged-in user email (saved from login.js)
+  // Get current user
   const currentUserEmail = localStorage.getItem("currentUserEmail");
 
-  // Check if user is authorized to access admin page
+  // Check authorization
   if (!adminEmails.includes(currentUserEmail)) {
     alert("You are not authorized to access this page!");
-    window.location.href = "dashboard.html"; // redirect non-admins
+    window.location.href = "dashboard.html";
     return;
   }
 
-  // Placeholder admin games
-  const adminGames = [
+  const tbody = document.querySelector("#adminGamesTable tbody");
+  const addGameBtn = document.getElementById("addGameBtn");
+  const saveGamesBtn = document.getElementById("saveGamesBtn");
+  const messageEl = document.getElementById("adminMessage");
+
+  // Load existing games if any
+  let adminGames = JSON.parse(localStorage.getItem("weeklyGames")) || [
     { home: "Packers", away: "Bears", winner: "" },
     { home: "Cowboys", away: "Giants", winner: "" },
   ];
 
-  const tbodyAdmin = document.querySelector("#adminGamesTable tbody");
-
-  if (!tbodyAdmin) {
-    console.error("Admin table not found.");
-    return;
-  }
-
-  adminGames.forEach((game, index) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-        <td>${game.home}</td>
-        <td>${game.away}</td>
+  // Function to render table
+  function renderGames() {
+    tbody.innerHTML = "";
+    adminGames.forEach((game, index) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td><input type="text" id="home${index}" value="${game.home}" placeholder="Home Team"></td>
+        <td><input type="text" id="away${index}" value="${game.away}" placeholder="Away Team"></td>
         <td>
           <select id="winner${index}">
             <option value="">Select Winner</option>
@@ -37,26 +38,31 @@ document.addEventListener("DOMContentLoaded", () => {
             <option value="${game.away}">${game.away}</option>
           </select>
         </td>
-        <td><button id="updateBtn${index}">Update</button></td>
       `;
-    tbodyAdmin.appendChild(row);
+      tbody.appendChild(row);
+    });
+  }
 
-    document
-      .getElementById(`updateBtn${index}`)
-      .addEventListener("click", () => updateWinner(index));
+  renderGames();
+
+  // Add new game row
+  addGameBtn.addEventListener("click", () => {
+    adminGames.push({ home: "", away: "", winner: "" });
+    renderGames();
   });
 
-  function updateWinner(index) {
-    const winner = document.getElementById(`winner${index}`).value;
-    const messageEl = document.getElementById("adminMessage");
+  // Save games to localStorage
+  saveGamesBtn.addEventListener("click", () => {
+    // Update array with current input values
+    adminGames = adminGames.map((game, index) => ({
+      home: document.getElementById(`home${index}`).value.trim() || "TBD",
+      away: document.getElementById(`away${index}`).value.trim() || "TBD",
+      winner: document.getElementById(`winner${index}`).value.trim(),
+    }));
 
-    if (winner === "") {
-      messageEl.textContent = "Please select a winner.";
-      messageEl.style.color = "red";
-    } else {
-      adminGames[index].winner = winner;
-      messageEl.textContent = `✅ Updated winner: ${winner}`;
-      messageEl.style.color = "green";
-    }
-  }
+    localStorage.setItem("weeklyGames", JSON.stringify(adminGames));
+
+    messageEl.textContent = "✅ Games saved successfully! They will appear on the Picks page.";
+    messageEl.style.color = "green";
+  });
 });
