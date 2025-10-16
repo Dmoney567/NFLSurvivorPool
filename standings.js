@@ -6,7 +6,7 @@ const standings = [
 
 const tbodyStandings = document.querySelector('#standingsTable tbody');
 
-standings.forEach(s => {
+standings.forEach(s => { 
     const row = document.createElement('tr');
     row.innerHTML = `<td>${s.player}</td><td>${s.wins}</td><td>${s.losses}</td><td>${s.status}</td>`;
     tbodyStandings.appendChild(row);
