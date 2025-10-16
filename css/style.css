@@ -332,5 +332,47 @@ main h2 {
   background-color: #e8f0ff;
   cursor: default;
 }
+/* ---------- DASHBOARD ---------- */
+.dashboard-subtitle {
+  text-align: center;
+  color: #333;
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+
+.dashboard-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.dashboard-card {
+  display: block;
+  background-color: #ffffff;
+  text-align: center;
+  padding: 20px;
+  width: 250px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  text-decoration: none;
+  color: #004080;
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+.dashboard-card h3 {
+  margin-bottom: 10px;
+  font-size: 1.2em;
+}
+
+.dashboard-card p {
+  color: #666;
+  font-size: 0.9em;
+}
 
 
