@@ -5,7 +5,7 @@ const adminEmails = ["dominic.ateek@yahoo.com", "youremail@example.com"];
 if(!adminEmails.includes(currentUserEmail)){
     alert("You are not authorized to access this page!");
     window.location.href = "dashboard.html"; // redirect non-admins 
-}
+} 
 
 // Placeholder admin games
 const adminGames = [
