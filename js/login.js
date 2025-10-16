@@ -1,5 +1,5 @@
 // Hardcoded list of admin emails
-const adminEmails = ["dominic.ateek@yahoo.com", "youremail@example.com"];
+const adminEmails = ["dominic.ateek@yahoo.com", "kroifyatoma@yahoo.com"];
 
 // LOGIN BUTTON
 document.getElementById("loginBtn").addEventListener("click", () => {
