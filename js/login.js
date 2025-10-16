@@ -9,7 +9,7 @@ document.getElementById('loginBtn').addEventListener('click', () => {
     const email = document.getElementById('loginEmail').value;
     const password = document.getElementById('loginPassword').value; 
 
-    currentUserEmail = email; // save the email
+    currentUserEmail = email; // save the email 
 
     alert(`Logged in as ${email} (demo, no backend yet)`);
 
