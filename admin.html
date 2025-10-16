@@ -18,25 +18,27 @@
   </header>
 
   <main>
-    <h2>Weekly Matchups</h2>
+    <h2>Update Weekly Matchups</h2>
 
     <table id="adminGamesTable">
       <thead>
         <tr>
           <th>Home Team</th>
           <th>Away Team</th>
-          <th>Winner</th>
+          <th>Spread</th>
+          <th>Action</th>
         </tr>
       </thead>
-      <tbody>
-        <!-- Populated by JS -->
-      </tbody>
+      <tbody id="gamesTableBody"></tbody>
     </table>
 
-    <button id="addGameBtn">➕ Add Game</button>
-    <button id="saveGamesBtn">💾 Save Games for Picks Page</button>
-    <p id="adminMessage"></p>
+    <button id="addGameBtn">+ Add Matchup</button>
+    <button id="saveGamesBtn">💾 Save All Matchups</button>
   </main>
+
+  <footer>
+    <p>&copy; 2025 NFL Survivor Pool</p>
+  </footer>
 
   <script src="js/admin.js"></script>
 </body>
