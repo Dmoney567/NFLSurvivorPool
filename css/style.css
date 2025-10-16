@@ -105,3 +105,8 @@ footer {
   color: white;
   margin-top: 40px;
 }
+.matchup-row span {
+  font-weight: bold;
+  color: #444;
+}
+
