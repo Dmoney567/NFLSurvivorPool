@@ -7,7 +7,7 @@ const adminEmails = ["dominic.ateek@yahoo.com", "youremail@example.com"];
 // Login button
 document.getElementById('loginBtn').addEventListener('click', () => {
     const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
+    const password = document.getElementById('loginPassword').value; 
 
     currentUserEmail = email; // save the email
 
