@@ -2,7 +2,7 @@
 let currentUserEmail = "";
 
 // Hardcoded list of admin emails
-const adminEmails = ["admin@example.com", "youremail@example.com"];
+const adminEmails = ["dominic.ateek@yahoo.com", "youremail@example.com"];
 
 // Login button
 document.getElementById('loginBtn').addEventListener('click', () => {
