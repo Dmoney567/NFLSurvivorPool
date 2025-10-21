@@ -32,7 +32,41 @@
   </footer>
 
   <script>
-    // Get matchups from localStorage (set by admin page)
+    const logoMap = {
+      "49ers": "https://static.www.nfl.com/t_person_square_mobile/f_auto/49ers.png",
+      "Bears": "https://static.www.nfl.com/t_person_square_mobile/f_auto/bears.png",
+      "Bengals": "https://static.www.nfl.com/t_person_square_mobile/f_auto/bengals.png",
+      "Bills": "https://static.www.nfl.com/t_person_square_mobile/f_auto/bills.png",
+      "Broncos": "https://static.www.nfl.com/t_person_square_mobile/f_auto/broncos.png",
+      "Browns": "https://static.www.nfl.com/t_person_square_mobile/f_auto/browns.png",
+      "Buccaneers": "https://static.www.nfl.com/t_person_square_mobile/f_auto/buccaneers.png",
+      "Cardinals": "https://static.www.nfl.com/t_person_square_mobile/f_auto/cardinals.png",
+      "Chargers": "https://static.www.nfl.com/t_person_square_mobile/f_auto/chargers.png",
+      "Chiefs": "https://static.www.nfl.com/t_person_square_mobile/f_auto/chiefs.png",
+      "Colts": "https://static.www.nfl.com/t_person_square_mobile/f_auto/colts.png",
+      "Commanders": "https://static.www.nfl.com/t_person_square_mobile/f_auto/commanders.png",
+      "Cowboys": "https://static.www.nfl.com/t_person_square_mobile/f_auto/cowboys.png",
+      "Dolphins": "https://static.www.nfl.com/t_person_square_mobile/f_auto/dolphins.png",
+      "Eagles": "https://static.www.nfl.com/t_person_square_mobile/f_auto/eagles.png",
+      "Falcons": "https://static.www.nfl.com/t_person_square_mobile/f_auto/falcons.png",
+      "Giants": "https://static.www.nfl.com/t_person_square_mobile/f_auto/giants.png",
+      "Jaguars": "https://static.www.nfl.com/t_person_square_mobile/f_auto/jaguars.png",
+      "Jets": "https://static.www.nfl.com/t_person_square_mobile/f_auto/jets.png",
+      "Lions": "https://static.www.nfl.com/t_person_square_mobile/f_auto/lions.png",
+      "Packers": "https://static.www.nfl.com/t_person_square_mobile/f_auto/packers.png",
+      "Panthers": "https://static.www.nfl.com/t_person_square_mobile/f_auto/panthers.png",
+      "Patriots": "https://static.www.nfl.com/t_person_square_mobile/f_auto/patriots.png",
+      "Raiders": "https://static.www.nfl.com/t_person_square_mobile/f_auto/raiders.png",
+      "Rams": "https://static.www.nfl.com/t_person_square_mobile/f_auto/rams.png",
+      "Ravens": "https://static.www.nfl.com/t_person_square_mobile/f_auto/ravens.png",
+      "Saints": "https://static.www.nfl.com/t_person_square_mobile/f_auto/saints.png",
+      "Seahawks": "https://static.www.nfl.com/t_person_square_mobile/f_auto/seahawks.png",
+      "Steelers": "https://static.www.nfl.com/t_person_square_mobile/f_auto/steelers.png",
+      "Texans": "https://static.www.nfl.com/t_person_square_mobile/f_auto/texans.png",
+      "Titans": "https://static.www.nfl.com/t_person_square_mobile/f_auto/titans.png",
+      "Vikings": "https://static.www.nfl.com/t_person_square_mobile/f_auto/vikings.png"
+    };
+
     const matchups = JSON.parse(localStorage.getItem("matchups")) || [];
     const container = document.getElementById("matchupsContainer");
     const submitBtn = document.getElementById("submitPickBtn");
@@ -40,7 +74,6 @@
 
     let chosenTeam = localStorage.getItem("chosenTeam") || "";
 
-    // Render all matchups
     function renderMatchups() {
       container.innerHTML = "";
 
@@ -54,9 +87,15 @@
         matchupDiv.classList.add("matchup");
         matchupDiv.innerHTML = `
           <div class="teams">
-            <button class="team-btn" onclick="chooseTeam('${m.home}')">${m.home}</button>
-            <span>vs</span>
-            <button class="team-btn" onclick="chooseTeam('${m.away}')">${m.away}</button>
+            <div class="team">
+              <img src="${logoMap[m.home] || ''}" alt="${m.home}" class="team-logo" />
+              <button class="team-btn" onclick="chooseTeam('${m.home}')">${m.home}</button>
+            </div>
+            <div class="spread">Spread: ${m.spread || "N/A"}</div>
+            <div class="team">
+              <button class="team-btn" onclick="chooseTeam('${m.away}')">${m.away}</button>
+              <img src="${logoMap[m.away] || ''}" alt="${m.away}" class="team-logo" />
+            </div>
           </div>
         `;
         container.appendChild(matchupDiv);
@@ -68,7 +107,6 @@
       }
     }
 
-    // Choose one team only
     function chooseTeam(team) {
       chosenTeam = team;
       localStorage.setItem("chosenTeam", team);
@@ -76,14 +114,11 @@
       submitBtn.disabled = false;
     }
 
-    // Submit button (can add more later)
     submitBtn.addEventListener("click", () => {
       alert(`You submitted your pick: ${chosenTeam}`);
     });
 
     renderMatchups();
   </script>
-
-  <script src="js/global.js"></script>
 </body>
 </html>
