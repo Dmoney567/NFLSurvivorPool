@@ -20,13 +20,18 @@
 
   <main>
     <h2>Manage Matchups</h2>
-    <p>Add or remove matchups for this week’s games. These will appear on the Picks page.</p>
+    <p>Select teams and enter the spread. These matchups will appear on the Picks page.</p>
 
     <div class="admin-controls">
-      <input type="text" id="homeTeamInput" placeholder="Home Team" />
-      <input type="text" id="awayTeamInput" placeholder="Away Team" />
+      <select id="homeTeamSelect">
+        <option value="">Select Home Team</option>
+      </select>
+      <select id="awayTeamSelect">
+        <option value="">Select Away Team</option>
+      </select>
+      <input type="text" id="spreadInput" placeholder="Spread (e.g. -3.5)" />
       <button id="addMatchupBtn">Add Matchup</button>
-      <button id="clearAllBtn" class="danger-btn">Clear All Matchups</button>
+      <button id="clearAllBtn" class="danger-btn">Clear All</button>
     </div>
 
     <table id="adminGamesTable">
@@ -34,6 +39,7 @@
         <tr>
           <th>Home Team</th>
           <th>Away Team</th>
+          <th>Spread</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -46,19 +52,38 @@
   </footer>
 
   <script>
-    const homeInput = document.getElementById("homeTeamInput");
-    const awayInput = document.getElementById("awayTeamInput");
+    const teams = [
+      "49ers","Bears","Bengals","Bills","Broncos","Browns","Buccaneers","Cardinals",
+      "Chargers","Chiefs","Colts","Commanders","Cowboys","Dolphins","Eagles","Falcons",
+      "Giants","Jaguars","Jets","Lions","Packers","Panthers","Patriots","Raiders",
+      "Rams","Ravens","Saints","Seahawks","Steelers","Texans","Titans","Vikings"
+    ];
+
+    const homeSelect = document.getElementById("homeTeamSelect");
+    const awaySelect = document.getElementById("awayTeamSelect");
+    const spreadInput = document.getElementById("spreadInput");
     const addBtn = document.getElementById("addMatchupBtn");
     const clearAllBtn = document.getElementById("clearAllBtn");
-    const tableBody = document.getElementById("adminGamesTable").querySelector("tbody");
+    const tableBody = document.querySelector("#adminGamesTable tbody");
 
     let matchups = JSON.parse(localStorage.getItem("matchups")) || [];
 
-    // Render all current matchups
+    // Populate dropdowns
+    teams.forEach(t => {
+      const opt1 = document.createElement("option");
+      opt1.value = opt1.textContent = t;
+      homeSelect.appendChild(opt1);
+
+      const opt2 = document.createElement("option");
+      opt2.value = opt2.textContent = t;
+      awaySelect.appendChild(opt2);
+    });
+
+    // Render matchups
     function renderMatchups() {
       tableBody.innerHTML = "";
       if (matchups.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="3">No matchups added yet.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="4">No matchups added yet.</td></tr>`;
         return;
       }
 
@@ -67,40 +92,47 @@
         row.innerHTML = `
           <td>${m.home}</td>
           <td>${m.away}</td>
-          <td><button onclick="removeMatchup(${i})" class="danger-btn">Remove</button></td>
+          <td>${m.spread}</td>
+          <td><button class="danger-btn" onclick="removeMatchup(${i})">Remove</button></td>
         `;
         tableBody.appendChild(row);
       });
     }
 
-    // Add a new matchup
+    // Add matchup
     addBtn.addEventListener("click", () => {
-      const home = homeInput.value.trim();
-      const away = awayInput.value.trim();
+      const home = homeSelect.value;
+      const away = awaySelect.value;
+      const spread = spreadInput.value.trim();
 
       if (!home || !away) {
-        alert("Please enter both team names.");
+        alert("Please select both teams.");
+        return;
+      }
+      if (home === away) {
+        alert("Teams must be different.");
         return;
       }
 
-      matchups.push({ home, away });
+      matchups.push({ home, away, spread });
       localStorage.setItem("matchups", JSON.stringify(matchups));
 
-      homeInput.value = "";
-      awayInput.value = "";
+      homeSelect.value = "";
+      awaySelect.value = "";
+      spreadInput.value = "";
       renderMatchups();
     });
 
-    // Remove a specific matchup
+    // Remove matchup
     function removeMatchup(index) {
       matchups.splice(index, 1);
       localStorage.setItem("matchups", JSON.stringify(matchups));
       renderMatchups();
     }
 
-    // Clear all matchups
+    // Clear all
     clearAllBtn.addEventListener("click", () => {
-      if (confirm("Are you sure you want to clear all matchups?")) {
+      if (confirm("Clear all matchups?")) {
         matchups = [];
         localStorage.removeItem("matchups");
         renderMatchups();
@@ -109,7 +141,5 @@
 
     renderMatchups();
   </script>
-
-  <script src="js/global.js"></script>
 </body>
 </html>
