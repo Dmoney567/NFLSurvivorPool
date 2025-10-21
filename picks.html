@@ -32,93 +32,97 @@
   </footer>
 
   <script>
-    const matchups = JSON.parse(localStorage.getItem("matchups")) || [];
-    const container = document.getElementById("matchupsContainer");
-    const submitBtn = document.getElementById("submitPickBtn");
-    const chosenDisplay = document.getElementById("chosenDisplay");
+  const matchups = JSON.parse(localStorage.getItem("matchups")) || [];
+  const container = document.getElementById("matchupsContainer");
+  const submitBtn = document.getElementById("submitPickBtn");
+  const chosenDisplay = document.getElementById("chosenDisplay");
 
-    let chosenTeam = localStorage.getItem("chosenTeam") || "";
+  let chosenTeam = localStorage.getItem("chosenTeam") || "";
 
-    // ==========================
-    // Render Matchups
-    // ==========================
-    function renderMatchups() {
-      container.innerHTML = "";
+  // ==========================
+  // Render Matchups
+  // ==========================
+  function renderMatchups() {
+    container.innerHTML = "";
 
-      if (matchups.length === 0) {
-        container.innerHTML = "<p>No matchups available yet. Check back later!</p>";
-        return;
-      }
+    if (matchups.length === 0) {
+      container.innerHTML = "<p>No matchups available yet. Check back later!</p>";
+      return;
+    }
 
-      matchups.forEach((m) => {
-        const home = m.home;
-        const away = m.away;
-        const spread = parseFloat(m.spread);
-        let favored, underdog, displaySpread;
+    matchups.forEach((m) => {
+      const home = m.home;
+      const away = m.away;
+      const spread = parseFloat(m.spread);
+      let favored, underdog, displaySpread;
 
-        // Determine favored team and format
-        if (!isNaN(spread)) {
-          if (spread < 0) {
-            favored = home;
-            underdog = away;
-            displaySpread = `${spread}@`;
-          } else {
-            favored = away;
-            underdog = home;
-            displaySpread = `-${spread}@`;
-          }
-        } else {
+      if (!isNaN(spread)) {
+        if (spread < 0) {
+          // Negative spread means home team is favored
           favored = home;
           underdog = away;
-          displaySpread = "vs";
+          displaySpread = `${Math.abs(spread)} @`;
+        } else if (spread > 0) {
+          // Positive spread means away team is favored
+          favored = away;
+          underdog = home;
+          displaySpread = `${Math.abs(spread)} @`;
+        } else {
+          // Spread = 0 (pick'em)
+          favored = home;
+          underdog = away;
+          displaySpread = "PK @";
         }
-
-        const matchupDiv = document.createElement("div");
-        matchupDiv.classList.add("matchup");
-        matchupDiv.innerHTML = `
-          <div class="matchup-row">
-            <button class="team-btn" onclick="chooseTeam('${favored}')">${favored}</button>
-            <span class="spread">${displaySpread}</span>
-            <button class="team-btn" onclick="chooseTeam('${underdog}')">${underdog}</button>
-          </div>
-        `;
-        container.appendChild(matchupDiv);
-      });
-
-      // Re-highlight saved pick when reloading
-      if (chosenTeam) {
-        chosenDisplay.innerText = `You picked: ${chosenTeam}`;
-        submitBtn.disabled = false;
-        const selectedBtn = [...document.querySelectorAll(".team-btn")].find(b => b.textContent === chosenTeam);
-        if (selectedBtn) selectedBtn.classList.add("selected");
+      } else {
+        favored = home;
+        underdog = away;
+        displaySpread = "vs";
       }
-    }
 
-    // ==========================
-    // Choose Team
-    // ==========================
-    function chooseTeam(team) {
-      chosenTeam = team;
-      localStorage.setItem("chosenTeam", team);
-      chosenDisplay.innerText = `You picked: ${team}`;
-      submitBtn.disabled = false;
-
-      // Remove highlight from all buttons
-      document.querySelectorAll(".team-btn").forEach(btn => btn.classList.remove("selected"));
-
-      // Highlight the newly chosen team
-      const selectedBtn = [...document.querySelectorAll(".team-btn")].find(b => b.textContent === team);
-      if (selectedBtn) selectedBtn.classList.add("selected");
-    }
-
-    // ==========================
-    // Submit Pick
-    // ==========================
-    submitBtn.addEventListener("click", () => {
-      alert(`You submitted your pick: ${chosenTeam}`);
+      const matchupDiv = document.createElement("div");
+      matchupDiv.classList.add("matchup");
+      matchupDiv.innerHTML = `
+        <div class="matchup-row">
+          <button class="team-btn" onclick="chooseTeam('${favored}')">${favored}</button>
+          <span class="spread">-${displaySpread}</span>
+          <button class="team-btn" onclick="chooseTeam('${underdog}')">${underdog}</button>
+        </div>
+      `;
+      container.appendChild(matchupDiv);
     });
 
-    renderMatchups();
-  </script>
+    // Highlight saved pick on reload
+    if (chosenTeam) {
+      chosenDisplay.innerText = `You picked: ${chosenTeam}`;
+      submitBtn.disabled = false;
+      const selectedBtn = [...document.querySelectorAll(".team-btn")].find(b => b.textContent === chosenTeam);
+      if (selectedBtn) selectedBtn.classList.add("selected");
+    }
+  }
+
+  // ==========================
+  // Choose Team
+  // ==========================
+  function chooseTeam(team) {
+    chosenTeam = team;
+    localStorage.setItem("chosenTeam", team);
+    chosenDisplay.innerText = `You picked: ${team}`;
+    submitBtn.disabled = false;
+
+    document.querySelectorAll(".team-btn").forEach(btn => btn.classList.remove("selected"));
+    const selectedBtn = [...document.querySelectorAll(".team-btn")].find(b => b.textContent === team);
+    if (selectedBtn) selectedBtn.classList.add("selected");
+  }
+
+  // ==========================
+  // Submit Pick
+  // ==========================
+  submitBtn.addEventListener("click", () => {
+    alert(`You submitted your pick: ${chosenTeam}`);
+  });
+
+  renderMatchups();
+</script>
+
 </body>
 </html>
