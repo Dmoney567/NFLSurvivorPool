@@ -23,6 +23,7 @@
     <p>Select one team below. You can only pick one per week.</p>
 
     <div id="matchupsContainer" class="matchups-container"></div>
+    <p id="chosenDisplay" class="chosen-display"></p>
     <button id="submitPickBtn" disabled>Submit Pick</button>
   </main>
 
@@ -30,8 +31,59 @@
     <p>&copy; 2025 NFL Survivor Pool</p>
   </footer>
 
-  <script src="js/picks.js"></script>
-  <script src="js/global.js"></script>
+  <script>
+    // Get matchups from localStorage (set by admin page)
+    const matchups = JSON.parse(localStorage.getItem("matchups")) || [];
+    const container = document.getElementById("matchupsContainer");
+    const submitBtn = document.getElementById("submitPickBtn");
+    const chosenDisplay = document.getElementById("chosenDisplay");
 
+    let chosenTeam = localStorage.getItem("chosenTeam") || "";
+
+    // Render all matchups
+    function renderMatchups() {
+      container.innerHTML = "";
+
+      if (matchups.length === 0) {
+        container.innerHTML = "<p>No matchups available yet. Check back later!</p>";
+        return;
+      }
+
+      matchups.forEach((m) => {
+        const matchupDiv = document.createElement("div");
+        matchupDiv.classList.add("matchup");
+        matchupDiv.innerHTML = `
+          <div class="teams">
+            <button class="team-btn" onclick="chooseTeam('${m.home}')">${m.home}</button>
+            <span>vs</span>
+            <button class="team-btn" onclick="chooseTeam('${m.away}')">${m.away}</button>
+          </div>
+        `;
+        container.appendChild(matchupDiv);
+      });
+
+      if (chosenTeam) {
+        chosenDisplay.innerText = `You picked: ${chosenTeam}`;
+        submitBtn.disabled = false;
+      }
+    }
+
+    // Choose one team only
+    function chooseTeam(team) {
+      chosenTeam = team;
+      localStorage.setItem("chosenTeam", team);
+      chosenDisplay.innerText = `You picked: ${team}`;
+      submitBtn.disabled = false;
+    }
+
+    // Submit button (can add more later)
+    submitBtn.addEventListener("click", () => {
+      alert(`You submitted your pick: ${chosenTeam}`);
+    });
+
+    renderMatchups();
+  </script>
+
+  <script src="js/global.js"></script>
 </body>
 </html>
