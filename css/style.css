@@ -432,6 +432,41 @@ main h2 {
   .team-btn.selected {
   background-color: #28a745; /* green highlight */
 }
+.matchup {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.matchup-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.spread {
+  font-weight: bold;
+  color: #333;
+  font-size: 1.2em;
+}
+
+.team-btn {
+  background-color: #ddd;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.team-btn:hover {
+  background-color: #bbb;
+}
+
+.team-btn.selected {
+  background-color: #28a745;
+  color: #fff;
+}
 
 
 }
