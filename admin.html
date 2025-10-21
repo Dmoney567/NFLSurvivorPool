@@ -5,6 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin - Survivor Pool</title>
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .admin-controls {
+      margin-bottom: 20px;
+    }
+    .winner-select {
+      padding: 4px;
+      margin-right: 8px;
+    }
+    .update-btn {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .update-btn:hover {
+      background-color: #218838;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -20,7 +40,7 @@
 
   <main>
     <h2>Manage Matchups</h2>
-    <p>Select teams and spreads below. Choose which team is favored — the spread will automatically get a + or - sign.</p>
+    <p>Add, remove, and update game results below.</p>
 
     <div class="admin-controls">
       <select id="homeTeamSelect">
@@ -44,6 +64,7 @@
           <th>Home Team</th>
           <th>Away Team</th>
           <th>Spread</th>
+          <th>Winner</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -88,7 +109,7 @@
     function renderMatchups() {
       tableBody.innerHTML = "";
       if (matchups.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="4">No matchups added yet.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="5">No matchups added yet.</td></tr>`;
         return;
       }
 
@@ -98,6 +119,14 @@
           <td>${m.home}</td>
           <td>${m.away}</td>
           <td>${m.spread}</td>
+          <td>
+            <select class="winner-select" id="winnerSelect${i}">
+              <option value="">Select Winner</option>
+              <option value="${m.home}">${m.home}</option>
+              <option value="${m.away}">${m.away}</option>
+            </select>
+            <button class="update-btn" onclick="setWinner(${i})">Set Winner</button>
+          </td>
           <td><button class="danger-btn" onclick="removeMatchup(${i})">Remove</button></td>
         `;
         tableBody.appendChild(row);
@@ -124,10 +153,9 @@
         return;
       }
 
-      // Assign + or - automatically based on favored team
       const spread = favored === "home" ? -Math.abs(spreadVal) : Math.abs(spreadVal);
 
-      matchups.push({ home, away, spread });
+      matchups.push({ home, away, spread, winner: "" });
       localStorage.setItem("matchups", JSON.stringify(matchups));
 
       homeSelect.value = "";
@@ -153,6 +181,49 @@
         renderMatchups();
       }
     });
+
+    // ===============================
+    // Set Winner and Update Standings
+    // ===============================
+    function setWinner(index) {
+      const winner = document.getElementById(`winnerSelect${index}`).value;
+      if (!winner) {
+        alert("Please select a winner.");
+        return;
+      }
+
+      matchups[index].winner = winner;
+      localStorage.setItem("matchups", JSON.stringify(matchups));
+
+      let players = JSON.parse(localStorage.getItem("players")) || [];
+
+      players.forEach(player => {
+        player.picks.forEach(pick => {
+          if (pick.team && pick.result === "pending") {
+            const teamName = matchups[index].home.substring(0, 3).toUpperCase();
+            const winnerAbbr = winner.substring(0, 3).toUpperCase();
+            const pickAbbr = pick.team.substring(0, 3).toUpperCase();
+
+            if (pickAbbr === winnerAbbr) {
+              pick.result = "win";
+            } else {
+              pick.result = "loss";
+              player.alive = false;
+            }
+          }
+        });
+
+        // Lock future weeks for eliminated players
+        if (!player.alive) {
+          player.picks.forEach(p => {
+            if (p.result === "pending") p.result = "locked";
+          });
+        }
+      });
+
+      localStorage.setItem("players", JSON.stringify(players));
+      alert(`Winner set as ${winner}. Standings updated.`);
+    }
 
     renderMatchups();
   </script>
