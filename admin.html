@@ -20,7 +20,7 @@
 
   <main>
     <h2>Manage Matchups</h2>
-    <p>Select teams and enter the spread. These matchups will appear on the Picks page.</p>
+    <p>Select teams and spreads below. Choose which team is favored — the spread will automatically get a + or - sign.</p>
 
     <div class="admin-controls">
       <select id="homeTeamSelect">
@@ -29,7 +29,11 @@
       <select id="awayTeamSelect">
         <option value="">Select Away Team</option>
       </select>
-      <input type="text" id="spreadInput" placeholder="Spread (e.g. -3.5)" />
+      <input type="number" id="spreadInput" placeholder="Spread (e.g. 3.5)" step="0.5" />
+      <select id="favoredSelect">
+        <option value="home">Home Favored</option>
+        <option value="away">Away Favored</option>
+      </select>
       <button id="addMatchupBtn">Add Matchup</button>
       <button id="clearAllBtn" class="danger-btn">Clear All</button>
     </div>
@@ -62,6 +66,7 @@
     const homeSelect = document.getElementById("homeTeamSelect");
     const awaySelect = document.getElementById("awayTeamSelect");
     const spreadInput = document.getElementById("spreadInput");
+    const favoredSelect = document.getElementById("favoredSelect");
     const addBtn = document.getElementById("addMatchupBtn");
     const clearAllBtn = document.getElementById("clearAllBtn");
     const tableBody = document.querySelector("#adminGamesTable tbody");
@@ -103,7 +108,8 @@
     addBtn.addEventListener("click", () => {
       const home = homeSelect.value;
       const away = awaySelect.value;
-      const spread = spreadInput.value.trim();
+      const spreadVal = parseFloat(spreadInput.value);
+      const favored = favoredSelect.value;
 
       if (!home || !away) {
         alert("Please select both teams.");
@@ -113,6 +119,13 @@
         alert("Teams must be different.");
         return;
       }
+      if (isNaN(spreadVal)) {
+        alert("Please enter a valid spread number.");
+        return;
+      }
+
+      // Assign + or - automatically based on favored team
+      const spread = favored === "home" ? -Math.abs(spreadVal) : Math.abs(spreadVal);
 
       matchups.push({ home, away, spread });
       localStorage.setItem("matchups", JSON.stringify(matchups));
@@ -120,6 +133,8 @@
       homeSelect.value = "";
       awaySelect.value = "";
       spreadInput.value = "";
+      favoredSelect.value = "home";
+
       renderMatchups();
     });
 
