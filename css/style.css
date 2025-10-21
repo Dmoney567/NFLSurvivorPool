@@ -429,6 +429,11 @@ main h2 {
   color: #333;
 }
 
+  .team-btn.selected {
+  background-color: #28a745; /* green highlight */
+}
+
+
 }
 
 
