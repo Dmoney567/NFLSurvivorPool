@@ -107,12 +107,20 @@
       }
     }
 
-    function chooseTeam(team) {
-      chosenTeam = team;
-      localStorage.setItem("chosenTeam", team);
-      chosenDisplay.innerText = `You picked: ${team}`;
-      submitBtn.disabled = false;
-    }
+function chooseTeam(team) {
+  chosenTeam = team;
+  localStorage.setItem("chosenTeam", team);
+  chosenDisplay.innerText = `You picked: ${team}`;
+  submitBtn.disabled = false;
+
+  // Remove highlight from all buttons
+  document.querySelectorAll(".team-btn").forEach(btn => btn.classList.remove("selected"));
+
+  // Highlight the newly chosen team
+  const selectedBtn = [...document.querySelectorAll(".team-btn")].find(b => b.textContent === team);
+  if (selectedBtn) selectedBtn.classList.add("selected");
+}
+
 
     submitBtn.addEventListener("click", () => {
       alert(`You submitted your pick: ${chosenTeam}`);
