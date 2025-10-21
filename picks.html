@@ -42,63 +42,68 @@
   // ==========================
   // Render Matchups
   // ==========================
-  function renderMatchups() {
-    container.innerHTML = "";
+function renderMatchups() {
+  container.innerHTML = "";
 
-    if (matchups.length === 0) {
-      container.innerHTML = "<p>No matchups available yet. Check back later!</p>";
-      return;
-    }
-
-    matchups.forEach((m) => {
-      const home = m.home;
-      const away = m.away;
-      const spread = parseFloat(m.spread);
-      let favored, underdog, displaySpread;
-
-      if (!isNaN(spread)) {
-        if (spread < 0) {
-          // Negative spread means home team is favored
-          favored = home;
-          underdog = away;
-          displaySpread = `${Math.abs(spread)} @`;
-        } else if (spread > 0) {
-          // Positive spread means away team is favored
-          favored = away;
-          underdog = home;
-          displaySpread = `${Math.abs(spread)} @`;
-        } else {
-          // Spread = 0 (pick'em)
-          favored = home;
-          underdog = away;
-          displaySpread = "PK @";
-        }
-      } else {
-        favored = home;
-        underdog = away;
-        displaySpread = "vs";
-      }
-
-      const matchupDiv = document.createElement("div");
-      matchupDiv.classList.add("matchup");
-      matchupDiv.innerHTML = `
-        <div class="matchup-row">
-          <button class="team-btn" onclick="chooseTeam('${favored}')">${favored}</button>
-          <span class="spread">-${displaySpread}</span>
-          <button class="team-btn" onclick="chooseTeam('${underdog}')">${underdog}</button>
-        </div>
-      `;
-      container.appendChild(matchupDiv);
-    });
-
-    // Highlight saved pick on reload
-    if (chosenTeam) {
-      chosenDisplay.innerText = `You picked: ${chosenTeam}`;
-      submitBtn.disabled = false;
-      const selectedBtn = [...document.querySelectorAll(".team-btn")].find(b => b.textContent === chosenTeam);
-      if (selectedBtn) selectedBtn.classList.add("selected");
-    }
+  if (matchups.length === 0) {
+    container.innerHTML = "<p>No matchups available yet. Check back later!</p>";
+    return;
   }
+
+  matchups.forEach((m) => {
+    const home = m.home;
+    const away = m.away;
+    const spread = parseFloat(m.spread);
+    let leftTeam, rightTeam, displaySpread, middleText;
+
+    if (!isNaN(spread)) {
+      if (spread < 0) {
+        // Home is favored
+        leftTeam = home;
+        rightTeam = away;
+        displaySpread = `-${Math.abs(spread)}`;
+        middleText = "vs";
+      } else if (spread > 0) {
+        // Away is favored
+        leftTeam = away;
+        rightTeam = home;
+        displaySpread = `-${Math.abs(spread)}`;
+        middleText = "@";
+      } else {
+        // Pick'em
+        leftTeam = home;
+        rightTeam = away;
+        displaySpread = "";
+        middleText = "vs";
+      }
+    } else {
+      // No valid spread
+      leftTeam = home;
+      rightTeam = away;
+      displaySpread = "";
+      middleText = "vs";
+    }
+
+    const matchupDiv = document.createElement("div");
+    matchupDiv.classList.add("matchup");
+    matchupDiv.innerHTML = `
+      <div class="matchup-row">
+        <button class="team-btn" onclick="chooseTeam('${leftTeam}')">${leftTeam}</button>
+        <span class="spread">${displaySpread} ${middleText}</span>
+        <button class="team-btn" onclick="chooseTeam('${rightTeam}')">${rightTeam}</button>
+      </div>
+    `;
+    container.appendChild(matchupDiv);
+  });
+
+  if (chosenTeam) {
+    chosenDisplay.innerText = `You picked: ${chosenTeam}`;
+    submitBtn.disabled = false;
+    const selectedBtn = [...document.querySelectorAll(".team-btn")].find(b => b.textContent === chosenTeam);
+    if (selectedBtn) selectedBtn.classList.add("selected");
+  }
+}
+
 
   // ==========================
   // Choose Team
