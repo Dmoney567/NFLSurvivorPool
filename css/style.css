@@ -373,6 +373,62 @@ main h2 {
 .dashboard-card p {
   color: #666;
   font-size: 0.9em;
+
+  .matchups-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.matchup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.teams {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.team-logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.team-btn {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.team-btn:hover {
+  background-color: #0056b3;
+}
+
+.spread {
+  font-weight: bold;
+  font-size: 1.1em;
+  color: #333;
+}
+
 }
 
 
