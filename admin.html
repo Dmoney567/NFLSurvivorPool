@@ -13,77 +13,103 @@
       <a href="dashboard.html">Dashboard</a>
       <a href="picks.html">Picks</a>
       <a href="standings.html">Standings</a>
+      <a href="admin.html" class="active">Admin</a>
       <a href="index.html">Logout</a>
     </nav>
   </header>
 
   <main>
-    <h2>Update Weekly Matchups</h2>
+    <h2>Manage Matchups</h2>
+    <p>Add or remove matchups for this week’s games. These will appear on the Picks page.</p>
+
+    <div class="admin-controls">
+      <input type="text" id="homeTeamInput" placeholder="Home Team" />
+      <input type="text" id="awayTeamInput" placeholder="Away Team" />
+      <button id="addMatchupBtn">Add Matchup</button>
+      <button id="clearAllBtn" class="danger-btn">Clear All Matchups</button>
+    </div>
 
     <table id="adminGamesTable">
       <thead>
         <tr>
           <th>Home Team</th>
           <th>Away Team</th>
-          <th>Spread</th>
           <th>Action</th>
         </tr>
       </thead>
-      <tbody id="gamesTableBody"></tbody>
+      <tbody></tbody>
     </table>
-
-    <button id="addGameBtn">+ Add Matchup</button>
-    <button id="saveGamesBtn">💾 Save All Matchups</button>
   </main>
 
   <footer>
     <p>&copy; 2025 NFL Survivor Pool</p>
   </footer>
 
-  <script src="js/admin.js"></script>
-  <script src="js/global.js"></script>
-<script>
-  const adminTable = document.getElementById("adminGamesTable").querySelector("tbody");
-  let matchups = JSON.parse(localStorage.getItem("matchups")) || [];
+  <script>
+    const homeInput = document.getElementById("homeTeamInput");
+    const awayInput = document.getElementById("awayTeamInput");
+    const addBtn = document.getElementById("addMatchupBtn");
+    const clearAllBtn = document.getElementById("clearAllBtn");
+    const tableBody = document.getElementById("adminGamesTable").querySelector("tbody");
 
-  // Display current matchups
-  function renderMatchups() {
-    adminTable.innerHTML = "";
-    matchups.forEach((m, i) => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${m.home}</td>
-        <td>${m.away}</td>
-        <td>${m.winner || "TBD"}</td>
-        <td><button onclick="removeMatchup(${i})">Remove</button></td>
-      `;
-      adminTable.appendChild(row);
+    let matchups = JSON.parse(localStorage.getItem("matchups")) || [];
+
+    // Render all current matchups
+    function renderMatchups() {
+      tableBody.innerHTML = "";
+      if (matchups.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="3">No matchups added yet.</td></tr>`;
+        return;
+      }
+
+      matchups.forEach((m, i) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${m.home}</td>
+          <td>${m.away}</td>
+          <td><button onclick="removeMatchup(${i})" class="danger-btn">Remove</button></td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    // Add a new matchup
+    addBtn.addEventListener("click", () => {
+      const home = homeInput.value.trim();
+      const away = awayInput.value.trim();
+
+      if (!home || !away) {
+        alert("Please enter both team names.");
+        return;
+      }
+
+      matchups.push({ home, away });
+      localStorage.setItem("matchups", JSON.stringify(matchups));
+
+      homeInput.value = "";
+      awayInput.value = "";
+      renderMatchups();
     });
-  }
 
-  // Add matchup
-  function addMatchup() {
-    const home = prompt("Enter home team:");
-    const away = prompt("Enter away team:");
-    if (home && away) {
-      matchups.push({ home, away, winner: "" });
+    // Remove a specific matchup
+    function removeMatchup(index) {
+      matchups.splice(index, 1);
       localStorage.setItem("matchups", JSON.stringify(matchups));
       renderMatchups();
     }
-  }
 
-  // Remove matchup
-  function removeMatchup(i) {
-    matchups.splice(i, 1);
-    localStorage.setItem("matchups", JSON.stringify(matchups));
+    // Clear all matchups
+    clearAllBtn.addEventListener("click", () => {
+      if (confirm("Are you sure you want to clear all matchups?")) {
+        matchups = [];
+        localStorage.removeItem("matchups");
+        renderMatchups();
+      }
+    });
+
     renderMatchups();
-  }
+  </script>
 
-  // Add a button dynamically to add matchups
-  document.body.insertAdjacentHTML("beforeend", `<button onclick="addMatchup()">Add Matchup</button>`);
-
-  renderMatchups();
-</script>
-
+  <script src="js/global.js"></script>
 </body>
 </html>
