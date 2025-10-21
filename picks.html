@@ -77,35 +77,55 @@
     function renderMatchups() {
       container.innerHTML = "";
 
-      if (matchups.length === 0) {
-        container.innerHTML = "<p>No matchups available yet. Check back later!</p>";
-        return;
-      }
+    function renderMatchups() {
+  container.innerHTML = "";
 
-      matchups.forEach((m) => {
-        const matchupDiv = document.createElement("div");
-        matchupDiv.classList.add("matchup");
-        matchupDiv.innerHTML = `
-          <div class="teams">
-            <div class="team">
-              <img src="${logoMap[m.home] || ''}" alt="${m.home}" class="team-logo" />
-              <button class="team-btn" onclick="chooseTeam('${m.home}')">${m.home}</button>
-            </div>
-            <div class="spread">Spread: ${m.spread || "N/A"}</div>
-            <div class="team">
-              <button class="team-btn" onclick="chooseTeam('${m.away}')">${m.away}</button>
-              <img src="${logoMap[m.away] || ''}" alt="${m.away}" class="team-logo" />
-            </div>
-          </div>
-        `;
-        container.appendChild(matchupDiv);
-      });
+  if (matchups.length === 0) {
+    container.innerHTML = "<p>No matchups available yet. Check back later!</p>";
+    return;
+  }
 
-      if (chosenTeam) {
-        chosenDisplay.innerText = `You picked: ${chosenTeam}`;
-        submitBtn.disabled = false;
+  matchups.forEach((m) => {
+    const home = m.home;
+    const away = m.away;
+    const spread = parseFloat(m.spread);
+    let favored, underdog, displaySpread, separator;
+
+    // Determine favored team and display format
+    if (!isNaN(spread)) {
+      if (spread < 0) {
+        favored = home;
+        underdog = away;
+        displaySpread = `${spread}@`;
+      } else {
+        favored = away;
+        underdog = home;
+        displaySpread = `-${spread}@`;
       }
+    } else {
+      favored = home;
+      underdog = away;
+      displaySpread = "vs";
     }
+
+    const matchupDiv = document.createElement("div");
+    matchupDiv.classList.add("matchup");
+    matchupDiv.innerHTML = `
+      <div class="matchup-row">
+        <button class="team-btn" onclick="chooseTeam('${favored}')">${favored}</button>
+        <span class="spread">${displaySpread}</span>
+        <button class="team-btn" onclick="chooseTeam('${underdog}')">${underdog}</button>
+      </div>
+    `;
+    container.appendChild(matchupDiv);
+  });
+
+  if (chosenTeam) {
+    chosenDisplay.innerText = `You picked: ${chosenTeam}`;
+    submitBtn.disabled = false;
+  }
+}
+
 
 function chooseTeam(team) {
   chosenTeam = team;
