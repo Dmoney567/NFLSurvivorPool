@@ -42,68 +42,67 @@
   // ==========================
   // Render Matchups
   // ==========================
-function renderMatchups() {
-  container.innerHTML = "";
+  function renderMatchups() {
+    container.innerHTML = "";
 
-  if (matchups.length === 0) {
-    container.innerHTML = "<p>No matchups available yet. Check back later!</p>";
-    return;
-  }
+    if (matchups.length === 0) {
+      container.innerHTML = "<p>No matchups available yet. Check back later!</p>";
+      return;
+    }
 
-  matchups.forEach((m) => {
-    const home = m.home;
-    const away = m.away;
-    const spread = parseFloat(m.spread);
-    let leftTeam, rightTeam, displaySpread, middleText;
+    matchups.forEach((m) => {
+      const home = m.home;
+      const away = m.away;
+      const spread = parseFloat(m.spread);
+      let leftTeam, rightTeam, displaySpread, middleText;
 
-    if (!isNaN(spread)) {
-      if (spread < 0) {
-        // Home is favored
-        leftTeam = home;
-        rightTeam = away;
-        displaySpread = `-${Math.abs(spread)}`;
-        middleText = "vs";
-      } else if (spread > 0) {
-        // Away is favored
-        leftTeam = away;
-        rightTeam = home;
-        displaySpread = `-${Math.abs(spread)}`;
-        middleText = "@";
+      if (!isNaN(spread)) {
+        if (spread < 0) {
+          // Home is favored
+          leftTeam = home;
+          rightTeam = away;
+          displaySpread = `-${Math.abs(spread)}`;
+          middleText = "vs";
+        } else if (spread > 0) {
+          // Away is favored
+          leftTeam = away;
+          rightTeam = home;
+          displaySpread = `-${Math.abs(spread)}`;
+          middleText = "@";
+        } else {
+          // Pick'em
+          leftTeam = home;
+          rightTeam = away;
+          displaySpread = "";
+          middleText = "vs";
+        }
       } else {
-        // Pick'em
+        // No valid spread
         leftTeam = home;
         rightTeam = away;
         displaySpread = "";
         middleText = "vs";
       }
-    } else {
-      // No valid spread
-      leftTeam = home;
-      rightTeam = away;
-      displaySpread = "";
-      middleText = "vs";
+
+      const matchupDiv = document.createElement("div");
+      matchupDiv.classList.add("matchup");
+      matchupDiv.innerHTML = `
+        <div class="matchup-row">
+          <button class="team-btn" onclick="chooseTeam('${leftTeam}')">${leftTeam}</button>
+          <span class="spread">${displaySpread} ${middleText}</span>
+          <button class="team-btn" onclick="chooseTeam('${rightTeam}')">${rightTeam}</button>
+        </div>
+      `;
+      container.appendChild(matchupDiv);
+    });
+
+    if (chosenTeam) {
+      chosenDisplay.innerText = `You picked: ${chosenTeam}`;
+      submitBtn.disabled = false;
+      const selectedBtn = [...document.querySelectorAll(".team-btn")].find(b => b.textContent === chosenTeam);
+      if (selectedBtn) selectedBtn.classList.add("selected");
     }
-
-    const matchupDiv = document.createElement("div");
-    matchupDiv.classList.add("matchup");
-    matchupDiv.innerHTML = `
-      <div class="matchup-row">
-        <button class="team-btn" onclick="chooseTeam('${leftTeam}')">${leftTeam}</button>
-        <span class="spread">${displaySpread} ${middleText}</span>
-        <button class="team-btn" onclick="chooseTeam('${rightTeam}')">${rightTeam}</button>
-      </div>
-    `;
-    container.appendChild(matchupDiv);
-  });
-
-  if (chosenTeam) {
-    chosenDisplay.innerText = `You picked: ${chosenTeam}`;
-    submitBtn.disabled = false;
-    const selectedBtn = [...document.querySelectorAll(".team-btn")].find(b => b.textContent === chosenTeam);
-    if (selectedBtn) selectedBtn.classList.add("selected");
   }
-}
-
 
   // ==========================
   // Choose Team
@@ -120,14 +119,42 @@ function renderMatchups() {
   }
 
   // ==========================
-  // Submit Pick
+  // Submit Pick — connects to standings
   // ==========================
   submitBtn.addEventListener("click", () => {
-    alert(`You submitted your pick: ${chosenTeam}`);
+    const username = localStorage.getItem("username") || "Dominic"; // Temporary username until login is added
+    const chosenTeamAbbr = chosenTeam.substring(0, 3).toUpperCase();
+    const currentWeek = 1; // Later can auto-update with a date system
+
+    let players = JSON.parse(localStorage.getItem("players")) || [];
+
+    // Find or create player
+    let player = players.find(p => p.username === username);
+    if (!player) {
+      player = { username, picks: [], alive: true };
+      players.push(player);
+    }
+
+    // Block eliminated players
+    if (!player.alive) {
+      alert("You’ve been eliminated and cannot make further picks.");
+      return;
+    }
+
+    // Update or add this week's pick
+    const existingPick = player.picks.find(p => p.week === currentWeek);
+    if (existingPick) {
+      existingPick.team = chosenTeamAbbr;
+      existingPick.result = "pending";
+    } else {
+      player.picks.push({ week: currentWeek, team: chosenTeamAbbr, result: "pending" });
+    }
+
+    localStorage.setItem("players", JSON.stringify(players));
+    alert(`You submitted your pick: ${chosenTeamAbbr}`);
   });
 
   renderMatchups();
-</script>
-
+  </script>
 </body>
 </html>
