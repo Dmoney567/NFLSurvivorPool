@@ -24,6 +24,9 @@
     .update-btn:hover {
       background-color: #218838;
     }
+    .week-selector {
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
@@ -40,6 +43,11 @@
 
   <main>
     <h2>Manage Matchups</h2>
+    <div class="week-selector">
+      <label for="weekSelect"><strong>Current Week:</strong></label>
+      <select id="weekSelect"></select>
+    </div>
+
     <p>Add, remove, and update game results below.</p>
 
     <div class="admin-controls">
@@ -91,6 +99,23 @@
     const addBtn = document.getElementById("addMatchupBtn");
     const clearAllBtn = document.getElementById("clearAllBtn");
     const tableBody = document.querySelector("#adminGamesTable tbody");
+    const weekSelect = document.getElementById("weekSelect");
+
+    // Load and setup week options
+    for (let i = 1; i <= 18; i++) {
+      const opt = document.createElement("option");
+      opt.value = i;
+      opt.textContent = `Week ${i}`;
+      weekSelect.appendChild(opt);
+    }
+
+    let currentWeek = parseInt(localStorage.getItem("currentWeek")) || 1;
+    weekSelect.value = currentWeek;
+    weekSelect.addEventListener("change", () => {
+      currentWeek = parseInt(weekSelect.value);
+      localStorage.setItem("currentWeek", currentWeek);
+      renderMatchups();
+    });
 
     let matchups = JSON.parse(localStorage.getItem("matchups")) || [];
 
@@ -108,12 +133,13 @@
     // Render matchups
     function renderMatchups() {
       tableBody.innerHTML = "";
-      if (matchups.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="5">No matchups added yet.</td></tr>`;
+      const currentWeekMatchups = matchups.filter(m => m.week === currentWeek);
+      if (currentWeekMatchups.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="5">No matchups for Week ${currentWeek}.</td></tr>`;
         return;
       }
 
-      matchups.forEach((m, i) => {
+      currentWeekMatchups.forEach((m, i) => {
         const row = document.createElement("tr");
         row.innerHTML = `
           <td>${m.home}</td>
@@ -140,22 +166,13 @@
       const spreadVal = parseFloat(spreadInput.value);
       const favored = favoredSelect.value;
 
-      if (!home || !away) {
-        alert("Please select both teams.");
-        return;
-      }
-      if (home === away) {
-        alert("Teams must be different.");
-        return;
-      }
-      if (isNaN(spreadVal)) {
-        alert("Please enter a valid spread number.");
-        return;
-      }
+      if (!home || !away) return alert("Please select both teams.");
+      if (home === away) return alert("Teams must be different.");
+      if (isNaN(spreadVal)) return alert("Please enter a valid spread number.");
 
       const spread = favored === "home" ? -Math.abs(spreadVal) : Math.abs(spreadVal);
 
-      matchups.push({ home, away, spread, winner: "" });
+      matchups.push({ week: currentWeek, home, away, spread, winner: "" });
       localStorage.setItem("matchups", JSON.stringify(matchups));
 
       homeSelect.value = "";
@@ -186,24 +203,22 @@
     // Set Winner and Update Standings
     // ===============================
     function setWinner(index) {
+      const weekMatchups = matchups.filter(m => m.week === currentWeek);
       const winner = document.getElementById(`winnerSelect${index}`).value;
-      if (!winner) {
-        alert("Please select a winner.");
-        return;
-      }
+      if (!winner) return alert("Please select a winner.");
 
-      matchups[index].winner = winner;
+      weekMatchups[index].winner = winner;
+      const globalIndex = matchups.findIndex(m => m.week === currentWeek && m.home === weekMatchups[index].home && m.away === weekMatchups[index].away);
+      matchups[globalIndex] = weekMatchups[index];
       localStorage.setItem("matchups", JSON.stringify(matchups));
 
       let players = JSON.parse(localStorage.getItem("players")) || [];
 
       players.forEach(player => {
         player.picks.forEach(pick => {
-          if (pick.team && pick.result === "pending") {
-            const teamName = matchups[index].home.substring(0, 3).toUpperCase();
+          if (pick.week === currentWeek && pick.result === "pending") {
             const winnerAbbr = winner.substring(0, 3).toUpperCase();
             const pickAbbr = pick.team.substring(0, 3).toUpperCase();
-
             if (pickAbbr === winnerAbbr) {
               pick.result = "win";
             } else {
@@ -213,16 +228,18 @@
           }
         });
 
-        // Lock future weeks for eliminated players
+        // Lock future weeks if eliminated
         if (!player.alive) {
           player.picks.forEach(p => {
-            if (p.result === "pending") p.result = "locked";
+            if (p.week > currentWeek && p.result === "pending") {
+              p.result = "locked";
+            }
           });
         }
       });
 
       localStorage.setItem("players", JSON.stringify(players));
-      alert(`Winner set as ${winner}. Standings updated.`);
+      alert(`Winner set as ${winner} for Week ${currentWeek}. Standings updated.`);
     }
 
     renderMatchups();
