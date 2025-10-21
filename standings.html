@@ -5,6 +5,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Standings - Survivor Pool</title>
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .standings-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 30px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 95%;
+      max-width: 900px;
+      text-align: center;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+    }
+
+    th {
+      background-color: #004080;
+      color: white;
+    }
+
+    td.name-cell {
+      font-weight: bold;
+      text-align: left;
+      padding-left: 15px;
+      background-color: #f8f9fa;
+    }
+
+    .pick-cell {
+      min-width: 60px;
+      font-weight: bold;
+    }
+
+    .win {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .loss {
+      background-color: #f8d7da;
+      color: #721c24;
+      text-decoration: line-through;
+    }
+
+    .future-locked {
+      background-color: #e2e3e5;
+      color: #6c757d;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -17,22 +79,15 @@
     </nav>
   </header>
 
-  <main> 
+  <main class="standings-container"> 
     <h2>Leaderboard</h2>
-    <p id="welcomeMessage" style="text-align:center; font-weight:bold; margin-bottom:20px;"></p>
-
     <table id="standingsTable">
       <thead>
-        <tr>
-          <th>Rank</th>
+        <tr id="weeksHeader">
           <th>Player</th>
-          <th>Wins</th>
-          <th>Losses</th>
         </tr>
       </thead>
-      <tbody>
-        <!-- JS will populate this -->
-      </tbody>
+      <tbody id="standingsBody"></tbody>
     </table>
   </main>
 
@@ -40,8 +95,84 @@
     <p>&copy; 2025 NFL Survivor Pool</p>
   </footer>
 
-  <script src="js/standings.js"></script>
-  <script src="js/global.js"></script>
+  <script>
+    // Mock data (replace with localStorage or backend data later)
+    const players = [
+      {
+        username: "Dominic",
+        picks: [
+          { week: 1, team: "DET", result: "win" },
+          { week: 2, team: "KC", result: "loss" },
+          { week: 3, team: "", result: "locked" }
+        ],
+        alive: false
+      },
+      {
+        username: "Alex",
+        picks: [
+          { week: 1, team: "SF", result: "win" },
+          { week: 2, team: "BUF", result: "win" },
+          { week: 3, team: "DAL", result: "pending" }
+        ],
+        alive: true
+      },
+      {
+        username: "Jordan",
+        picks: [
+          { week: 1, team: "GB", result: "loss" },
+          { week: 2, team: "", result: "locked" },
+          { week: 3, team: "", result: "locked" }
+        ],
+        alive: false
+      }
+    ];
 
+    // Determine max number of weeks
+    const maxWeeks = Math.max(...players.map(p => p.picks.length));
+
+    // Add week headers
+    const weeksHeader = document.getElementById("weeksHeader");
+    for (let w = 1; w <= maxWeeks; w++) {
+      const th = document.createElement("th");
+      th.textContent = `Week ${w}`;
+      weeksHeader.appendChild(th);
+    }
+
+    const body = document.getElementById("standingsBody");
+
+    // Render each player row
+    players.forEach(player => {
+      const row = document.createElement("tr");
+
+      // Player name
+      const nameCell = document.createElement("td");
+      nameCell.textContent = player.username;
+      nameCell.classList.add("name-cell");
+      row.appendChild(nameCell);
+
+      // Each week's cell
+      player.picks.forEach(pick => {
+        const cell = document.createElement("td");
+        cell.classList.add("pick-cell");
+
+        if (pick.result === "win") {
+          cell.classList.add("win");
+          cell.textContent = pick.team;
+        } else if (pick.result === "loss") {
+          cell.classList.add("loss");
+          cell.textContent = pick.team;
+        } else if (pick.result === "locked") {
+          cell.classList.add("future-locked");
+          cell.textContent = "-";
+        } else {
+          cell.textContent = pick.team || "";
+        }
+
+        row.appendChild(cell);
+      });
+
+      body.appendChild(row);
+    });
+  </script>
 </body>
 </html>
