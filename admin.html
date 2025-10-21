@@ -42,6 +42,48 @@
 
   <script src="js/admin.js"></script>
   <script src="js/global.js"></script>
+<script>
+  const adminTable = document.getElementById("adminGamesTable").querySelector("tbody");
+  let matchups = JSON.parse(localStorage.getItem("matchups")) || [];
+
+  // Display current matchups
+  function renderMatchups() {
+    adminTable.innerHTML = "";
+    matchups.forEach((m, i) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${m.home}</td>
+        <td>${m.away}</td>
+        <td>${m.winner || "TBD"}</td>
+        <td><button onclick="removeMatchup(${i})">Remove</button></td>
+      `;
+      adminTable.appendChild(row);
+    });
+  }
+
+  // Add matchup
+  function addMatchup() {
+    const home = prompt("Enter home team:");
+    const away = prompt("Enter away team:");
+    if (home && away) {
+      matchups.push({ home, away, winner: "" });
+      localStorage.setItem("matchups", JSON.stringify(matchups));
+      renderMatchups();
+    }
+  }
+
+  // Remove matchup
+  function removeMatchup(i) {
+    matchups.splice(i, 1);
+    localStorage.setItem("matchups", JSON.stringify(matchups));
+    renderMatchups();
+  }
+
+  // Add a button dynamically to add matchups
+  document.body.insertAdjacentHTML("beforeend", `<button onclick="addMatchup()">Add Matchup</button>`);
+
+  renderMatchups();
+</script>
 
 </body>
 </html>
