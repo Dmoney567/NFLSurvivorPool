@@ -1,509 +1,226 @@
+/* ==============================
+   GLOBAL STYLES
+============================== */
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
-  background-color: #f4f4f4;
-  color: #333;
-}
-
-header {
-  background-color: #004080;
-  color: white;
-  text-align: center;
-  padding: 20px 0;
-}
-
-nav a {
-  color: white;
-  background-color: #004080;
-  padding: 10px 20px;
-  margin: 5px;
-  text-decoration: none;
-  font-weight: bold;
-  border-radius: 8px;
-  transition: background-color 0.3s, transform 0.2s;
-}
-
-nav a:hover {
-  background-color: #0059b3;
-  transform: translateY(-2px);
-}
-
-nav a.active {
-  background-color: #007bff;
+  padding: 0;
+  background-color: #f2f6ff;
+  color: #222;
 }
 
 main {
-  max-width: 800px;
-  margin: 30px auto;
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  padding: 40px 20px;
+  max-width: 900px;
+  margin: auto;
   text-align: center;
 }
 
+footer {
+  text-align: center;
+  padding: 15px;
+  background-color: #004080;
+  color: white;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+/* ==============================
+   BUTTONS
+============================== */
+button {
+  background-color: #004080;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  margin: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #0066cc;
+}
+
+button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+.danger-btn {
+  background-color: #c0392b;
+}
+
+.danger-btn:hover {
+  background-color: #e74c3c;
+}
+
+/* ==============================
+   PICKS PAGE
+============================== */
 .matchups-container {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  margin: 20px 0;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.matchup {
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 15px;
+  transition: 0.3s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.matchup:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
 }
 
 .matchup-row {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
 }
 
 .team-btn {
-  background-color: #e0e0e0;
-  border: 1px solid #ccc;
-  padding: 10px 15px;
-  border-radius: 8px;
-  cursor: pointer;
+  padding: 8px 20px;
+  border-radius: 10px;
+  background-color: #e6eefc;
+  color: #004080;
   font-weight: bold;
-  transition: background-color 0.3s, transform 0.2s;
+  border: 2px solid #004080;
+  transition: 0.3s;
 }
 
 .team-btn:hover {
-  background-color: #d6d6d6;
-  transform: scale(1.05);
+  background-color: #004080;
+  color: white;
 }
 
 .team-btn.selected {
-  background-color: #007bff;
-  color: white;
-  border-color: #0056b3;
-}
-
-#submitPickBtn {
-  margin-top: 20px;
-  padding: 12px 25px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 1em;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-#submitPickBtn:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-#submitPickBtn:hover:enabled {
-  background-color: #218838;
-}
-
-footer {
-  text-align: center;
-  padding: 10px;
   background-color: #004080;
   color: white;
-  margin-top: 40px;
 }
-.matchup-row span {
-  font-weight: bold;
+
+.spread {
+  font-size: 18px;
+  font-weight: 600;
   color: #444;
 }
-/* ---------- ADMIN PAGE STYLES ---------- */
 
-main h2 {
-  margin-bottom: 15px;
-  color: #004080;
-  font-size: 1.6em;
+.chosen-display {
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+/* ==============================
+   ADMIN PAGE
+============================== */
+.admin-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.admin-controls select,
+.admin-controls input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #aaa;
+  min-width: 140px;
 }
 
 #adminGamesTable {
   width: 100%;
   border-collapse: collapse;
-  margin: 20px 0;
-  font-size: 1em;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-#adminGamesTable thead {
-  background-color: #004080;
-  color: white;
-}
-
-#adminGamesTable th, 
-#adminGamesTable td {
-  padding: 12px 15px;
-  text-align: center;
-}
-
-#adminGamesTable tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-#adminGamesTable tbody tr:nth-child(odd) {
-  background-color: #ffffff;
-}
-
-#adminGamesTable tbody tr:hover {
-  background-color: #e8f0ff;
-}
-
-#adminGamesTable input {
-  width: 90%;
-  padding: 6px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  text-align: center;
-  font-size: 0.95em;
-}
-
-.deleteBtn {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 6px 10px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.deleteBtn:hover {
-  background-color: #b52a37;
-}
-
-#addGameBtn, #saveGamesBtn {
-  background-color: #007bff;
-  color: white;
-  font-weight: bold;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 18px;
-  cursor: pointer;
-  margin: 10px 5px;
-  transition: background-color 0.3s, transform 0.2s;
-}
-
-#addGameBtn:hover, #saveGamesBtn:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px);
-}
-
-#saveGamesBtn {
-  background-color: #28a745;
-}
-
-#saveGamesBtn:hover {
-  background-color: #218838;
-}
-/* ---------- LOGIN PAGE ---------- */
-.login-body {
-  background: linear-gradient(135deg, #002855, #0059b3);
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: Arial, sans-serif;
-  color: #fff;
-}
-
-.login-container {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 15px;
-  padding: 40px 50px;
-  width: 320px;
-  text-align: center;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-  animation: fadeIn 0.8s ease-out;
-}
-
-.login-container h1 {
-  font-size: 1.8em;
-  margin-bottom: 10px;
-  color: #fff;
-}
-
-.login-container h2 {
-  font-size: 1.3em;
-  color: #cce0ff;
-  margin-bottom: 25px;
-}
-
-.login-container input {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  border: none;
-  border-radius: 8px;
-  outline: none;
-  font-size: 1em;
-  transition: background-color 0.3s, transform 0.2s;
-}
-
-.login-container input:focus {
-  background-color: #e6f0ff;
-  transform: scale(1.03);
-}
-
-.login-container button {
-  width: 100%;
-  padding: 12px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1em;
-  margin-top: 10px;
-  transition: background-color 0.3s, transform 0.2s;
-}
-
-.login-container button:hover {
-  background-color: #0056b3;
-  transform: scale(1.05);
-}
-
-.login-note {
-  margin-top: 15px;
-  font-size: 0.9em;
-  color: #cce0ff;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-/* ---------- SIGNUP PAGE ---------- */
-.link {
-  color: #66b3ff;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.link:hover {
-  text-decoration: underline;
-}
-
-.login-container input[type="password"],
-.login-container input[type="text"] {
-  background-color: #f9f9f9;
-}
-/* ---------- STANDINGS TABLE ---------- */
-#standingsTable {
-  width: 80%;
-  margin: 0 auto 40px;
-  border-collapse: collapse;
-  font-size: 1em;
-  text-align: center;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-#standingsTable thead {
-  background-color: #004080;
-  color: white;
-}
-
-#standingsTable th, 
-#standingsTable td {
-  padding: 12px 15px;
-  border-bottom: 1px solid #ddd;
-}
-
-#standingsTable tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-#standingsTable tbody tr:nth-child(odd) {
-  background-color: #fff;
-}
-
-#standingsTable tbody tr:hover {
-  background-color: #e8f0ff;
-  cursor: default;
-}
-/* ---------- DASHBOARD ---------- */
-.dashboard-subtitle {
-  text-align: center;
-  color: #333;
-  margin-top: 10px;
-  margin-bottom: 30px;
-}
-
-.dashboard-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-}
-
-.dashboard-card {
-  display: block;
-  background-color: #ffffff;
-  text-align: center;
-  padding: 20px;
-  width: 250px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  text-decoration: none;
-  color: #004080;
-  transition: transform 0.2s, box-shadow 0.3s;
-}
-
-.dashboard-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-}
-
-.dashboard-card h3 {
-  margin-bottom: 10px;
-  font-size: 1.2em;
-}
-
-.dashboard-card p {
-  color: #666;
-  font-size: 0.9em;
-
-  .matchups-container {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
   margin-top: 20px;
 }
 
-.matchup {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #f8f9fa;
-  border-radius: 10px;
-  padding: 15px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+#adminGamesTable th, #adminGamesTable td {
+  border: 1px solid #ddd;
+  padding: 10px;
 }
 
-.teams {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.team {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.team-logo {
-  width: 50px;
-  height: 50px;
-  object-fit: contain;
-}
-
-.team-btn {
-  padding: 6px 10px;
-  border: none;
-  border-radius: 6px;
-  background-color: #007bff;
+#adminGamesTable th {
+  background-color: #004080;
   color: white;
-  cursor: pointer;
-  transition: background-color 0.3s;
 }
 
-.team-btn:hover {
-  background-color: #0056b3;
+#adminGamesTable tr:nth-child(even) {
+  background-color: #f9f9f9;
 }
 
-.spread {
+#adminGamesTable tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* ==============================
+   STANDINGS PAGE
+============================== */
+.standings-container {
+  text-align: center;
+  margin-top: 40px;
+}
+
+#standingsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px auto;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+#standingsTable th, #standingsTable td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+#standingsTable th {
+  background-color: #004080;
+  color: white;
+}
+
+.name-cell {
   font-weight: bold;
-  font-size: 1.1em;
-  color: #333;
+  text-align: left;
+  background-color: #e6eefc;
 }
 
-  .team-btn.selected {
-  background-color: #28a745; /* green highlight */
-}
-.matchup {
-  display: flex;
-  justify-content: center;
-  margin: 15px 0;
+.pick-cell {
+  width: 60px;
+  height: 40px;
+  font-weight: 600;
 }
 
-.matchup-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.pick-cell.win {
+  background-color: #c8f7c5;
+  color: #155724;
 }
 
-.spread {
-  font-weight: bold;
-  color: #333;
-  font-size: 1.2em;
+.pick-cell.loss {
+  background-color: #f8d7da;
+  color: #721c24;
+  text-decoration: line-through;
 }
 
-.team-btn {
-  background-color: #ddd;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 14px;
-  cursor: pointer;
-  transition: background-color 0.2s;
+.pick-cell.future-locked {
+  background-color: #e0e0e0;
+  color: #666;
 }
 
-.team-btn:hover {
-  background-color: #bbb;
-}
-
-.team-btn.selected {
-  background-color: #28a745;
-  color: #fff;
-}
-
-  .matchup {
-  display: flex;
-  justify-content: center;
-  margin: 15px 0;
-}
-
-.matchup-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.spread {
-  font-weight: bold;
-  color: #333;
-  font-size: 1.2em;
-}
-
-.team-btn {
-  background-color: #ddd;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 14px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.team-btn:hover {
-  background-color: #bbb;
-}
-
-.team-btn.selected {
-  background-color: #28a745;
-  color: #fff;
-}
-/* ===== SIDEBAR NAVIGATION ===== */
+/* ==============================
+   SIDEBAR NAVIGATION
+============================== */
 .sidebar {
   position: fixed;
   top: 0;
@@ -514,7 +231,7 @@ main h2 {
   color: white;
   transition: left 0.3s ease;
   padding-top: 60px;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.2);
   z-index: 1000;
 }
 
@@ -524,19 +241,22 @@ main h2 {
 
 .sidebar h2 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  font-size: 20px;
+  letter-spacing: 0.5px;
 }
 
 .sidebar a {
   display: block;
-  padding: 14px 20px;
+  padding: 14px 22px;
   color: white;
   text-decoration: none;
   font-weight: 500;
   transition: background 0.3s;
 }
 
-.sidebar a:hover, .sidebar a.active {
+.sidebar a:hover,
+.sidebar a.active {
   background-color: #0066cc;
 }
 
@@ -544,7 +264,7 @@ main h2 {
   position: fixed;
   top: 15px;
   left: 15px;
-  font-size: 24px;
+  font-size: 26px;
   background: none;
   color: #004080;
   border: none;
@@ -556,14 +276,9 @@ main h2 {
   position: absolute;
   top: 10px;
   right: 20px;
-  font-size: 24px;
+  font-size: 26px;
   background: none;
   color: white;
   border: none;
   cursor: pointer;
 }
-
-
-}
-
-
