@@ -7,45 +7,26 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <header>
-    <h1>Survivor Pool Dashboard</h1>
-    <nav>
-      <a href="dashboard.html" class="active">Dashboard</a>
-      <a href="picks.html">Make Pick</a>
-      <a href="standings.html">Standings</a>
-      <a href="admin.html">Admin</a>
-      <a href="#" id="logoutBtn">Logout</a>
-    </nav>
-  </header>
+  <div id="sidebar" class="sidebar">
+    <button class="close-btn" onclick="toggleSidebar()">×</button>
+    <h2>NFL Survivor Pool</h2>
+    <a href="dashboard.html" class="active">Dashboard</a>
+    <a href="picks.html">Picks</a>
+    <a href="standings.html">Standings</a>
+    <a href="admin.html">Admin</a>
+    <a href="index.html">Logout</a>
+  </div>
+  <button class="menu-btn" onclick="toggleSidebar()">☰</button>
 
   <main>
-    <h2 id="welcomeMessage"></h2>
-    <p class="dashboard-subtitle">Your weekly hub for picks, standings, and updates.</p>
- 
-    <div class="dashboard-buttons">
-      <a href="picks.html" class="dashboard-card">
-        <h3>🏈 Make Your Pick</h3>
-        <p>Submit your team for this week.</p>
-      </a>
-
-      <a href="standings.html" class="dashboard-card">
-        <h3>📊 View Standings</h3>
-        <p>See how everyone ranks.</p>
-      </a>
-
-      <a href="admin.html" class="dashboard-card">
-        <h3>⚙️ Admin Panel</h3>
-        <p>Update weekly matchups and results.</p>
-      </a>
-    </div>
+    <h2>Welcome to your Dashboard</h2>
+    <p>Use the sidebar to navigate between Picks, Standings, and Admin pages.</p>
   </main>
 
-  <footer>
-    <p>&copy; 2025 NFL Survivor Pool</p>
-  </footer>
+  <footer><p>&copy; 2025 NFL Survivor Pool</p></footer>
 
-  <script src="js/dashboard.js"></script>
-  <script src="js/global.js"></script>
-
+  <script>
+  function toggleSidebar(){document.getElementById("sidebar").classList.toggle("active");}
+  </script>
 </body>
 </html>
