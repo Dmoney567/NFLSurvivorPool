@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <!-- Sidebar -->
   <div id="sidebar" class="sidebar">
     <button class="close-btn" onclick="toggleSidebar()">×</button>
     <h2>NFL Survivor Pool</h2>
@@ -14,10 +15,14 @@
     <a href="picks.html">Picks</a>
     <a href="standings.html">Standings</a>
     <a href="admin.html">Admin</a>
-    <a href="index.html">Logout</a> 
+    <a href="index.html">Logout</a>
   </div>
+
+  <!-- Hamburger button -->
   <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-<div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+  <!-- Overlay background -->
+  <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
 
   <main>
     <h2>Welcome to your Dashboard</h2>
@@ -27,7 +32,13 @@
   <footer><p>&copy; 2025 NFL Survivor Pool</p></footer>
 
   <script>
-  function toggleSidebar(){document.getElementById("sidebar").classList.toggle("active");}
+  // ✅ Fixed toggle for both sidebar and overlay
+  function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    const isActive = sidebar.classList.toggle("active");
+    overlay.classList.toggle("active", isActive);
+  }
   </script>
 </body>
 </html>
