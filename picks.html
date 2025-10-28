@@ -11,7 +11,7 @@
   <div id="sidebar" class="sidebar">
     <button class="close-btn" onclick="toggleSidebar()">×</button>
     <h2>NFL Survivor Pool</h2>
-    <a href="dashboard.html">Dashboard</a> 
+    <a href="dashboard.html">Dashboard</a>
     <a href="picks.html" class="active">Picks</a>
     <a href="standings.html">Standings</a>
     <a href="admin.html">Admin</a>
@@ -20,7 +20,9 @@
 
   <!-- Hamburger Button -->
   <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-<div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+  <!-- Overlay background -->
+  <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
 
   <main>
     <h2>Make Your Pick</h2>
@@ -37,8 +39,12 @@
   </footer>
 
   <script>
+  // ✅ Sidebar toggle (fixes overlay error)
   function toggleSidebar() {
-    document.getElementById("sidebar").classList.toggle("active");
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    const isActive = sidebar.classList.toggle("active");
+    overlay.classList.toggle("active", isActive);
   }
 
   const matchups = JSON.parse(localStorage.getItem("matchups")) || [];
@@ -49,6 +55,7 @@
 
   let chosenTeam = localStorage.getItem("chosenTeam") || "";
   let currentWeek = parseInt(localStorage.getItem("currentWeek")) || 1;
+
   weekDisplay.textContent = `Current Week: ${currentWeek}`;
 
   function renderMatchups() {
@@ -62,11 +69,22 @@
     weekMatchups.forEach((m) => {
       const home = m.home, away = m.away, spread = parseFloat(m.spread);
       let leftTeam, rightTeam, displaySpread, middleText;
+
       if (!isNaN(spread)) {
-        if (spread < 0) { leftTeam = home; rightTeam = away; displaySpread = `-${Math.abs(spread)}`; middleText = "vs"; }
-        else if (spread > 0) { leftTeam = away; rightTeam = home; displaySpread = `-${Math.abs(spread)}`; middleText = "@"; }
-        else { leftTeam = home; rightTeam = away; displaySpread = ""; middleText = "vs"; }
-      } else { leftTeam = home; rightTeam = away; displaySpread = ""; middleText = "vs"; }
+        if (spread < 0) {
+          leftTeam = home; rightTeam = away;
+          displaySpread = `-${Math.abs(spread)}`; middleText = "vs";
+        } else if (spread > 0) {
+          leftTeam = away; rightTeam = home;
+          displaySpread = `-${Math.abs(spread)}`; middleText = "@";
+        } else {
+          leftTeam = home; rightTeam = away;
+          displaySpread = ""; middleText = "vs";
+        }
+      } else {
+        leftTeam = home; rightTeam = away;
+        displaySpread = ""; middleText = "vs";
+      }
 
       const matchupDiv = document.createElement("div");
       matchupDiv.classList.add("matchup");
@@ -93,6 +111,7 @@
     localStorage.setItem("chosenTeam", team);
     chosenDisplay.innerText = `You picked: ${team}`;
     submitBtn.disabled = false;
+
     document.querySelectorAll(".team-btn").forEach(btn => btn.classList.remove("selected"));
     const selectedBtn = [...document.querySelectorAll(".team-btn")].find(b => b.textContent === team);
     if (selectedBtn) selectedBtn.classList.add("selected");
