@@ -15,29 +15,90 @@
     <a href="picks.html">Picks</a>
     <a href="standings.html">Standings</a>
     <a href="admin.html">Admin</a>
+    <a href="pools.html">Pools</a>
     <a href="index.html">Logout</a>
   </div>
-
-  <!-- Hamburger button -->
   <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-
-  <!-- Overlay background -->
   <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
 
   <main>
-    <h2>Welcome to your Dashboard</h2>
-    <p>Use the sidebar to navigate between Picks, Standings, and Admin pages.</p>
+    <h2>My Pool Dashboard</h2>
+
+    <div id="poolOverview" class="dashboard-card"></div>
+
+    <div id="playerCard" class="dashboard-card"></div>
+
+    <div class="dashboard-actions">
+      <button onclick="window.location.href='picks.html'">Make / Change Pick</button>
+      <button onclick="window.location.href='standings.html'">View Standings</button>
+      <button id="manageBtn" style="display:none;" onclick="window.location.href='managePool.html'">Manage Pool</button>
+    </div>
   </main>
 
   <footer><p>&copy; 2025 NFL Survivor Pool</p></footer>
 
   <script>
-  // ✅ Fixed toggle for both sidebar and overlay
+  // =============================
+  // Sidebar toggle
+  // =============================
   function toggleSidebar() {
     const sidebar = document.getElementById("sidebar");
     const overlay = document.getElementById("overlay");
     const isActive = sidebar.classList.toggle("active");
     overlay.classList.toggle("active", isActive);
+  }
+
+  // =============================
+  // Pool & Player Data
+  // =============================
+  const pools = JSON.parse(localStorage.getItem("pools")) || [];
+  const poolId = localStorage.getItem("currentPoolId");
+  const username = localStorage.getItem("loggedInUser") || "Guest";
+  const pool = pools.find(p => p.id === poolId);
+
+  const poolOverview = document.getElementById("poolOverview");
+  const playerCard = document.getElementById("playerCard");
+  const manageBtn = document.getElementById("manageBtn");
+
+  if (!pool) {
+    poolOverview.innerHTML = "<p>No pool selected. Please go to the Pools page.</p>";
+  } else {
+    // Pool overview
+    const aliveCount = pool.members.filter(m => m.alive).length;
+    const totalCount = pool.members.length;
+    poolOverview.innerHTML = `
+      <h3>${pool.name}</h3>
+      <p><strong>Owner:</strong> ${pool.owner}</p>
+      <p><strong>Current Week:</strong> ${pool.currentWeek}</p>
+      <p><strong>Players Remaining:</strong> ${aliveCount}/${totalCount}</p>
+    `;
+
+    // Player info
+    const player = pool.members.find(m => m.username === username);
+    if (!player) {
+      playerCard.innerHTML = "<p>You are not a member of this pool.</p>";
+      return;
+    }
+
+    const lastPick = player.picks.length ? player.picks[player.picks.length - 1] : null;
+    const lastWeek = lastPick ? lastPick.week : "—";
+    const lastTeam = lastPick ? lastPick.team : "—";
+    const lastResult = lastPick ? (lastPick.result === "win" ? "✅ Win" :
+                                   lastPick.result === "loss" ? "❌ Loss" :
+                                   "⏳ Pending") : "—";
+
+    playerCard.innerHTML = `
+      <h3>My Performance</h3>
+      <p><strong>Status:</strong> ${player.alive ? "<span style='color:green;'>Alive</span>" : "<span style='color:red;'>Eliminated</span>"}</p>
+      <p><strong>Last Pick:</strong> ${lastTeam}</p>
+      <p><strong>Week:</strong> ${lastWeek}</p>
+      <p><strong>Result:</strong> ${lastResult}</p>
+    `;
+
+    // Show manage button if owner
+    if (player.role === "owner") {
+      manageBtn.style.display = "inline-block";
+    }
   }
   </script>
 </body>
