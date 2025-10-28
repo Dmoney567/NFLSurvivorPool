@@ -1,1 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pools - Survivor Pool</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- Sidebar -->
+  <div id="sidebar" class="sidebar">
+    <button class="close-btn" onclick="toggleSidebar()">×</button>
+    <h2>NFL Survivor Pool</h2>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="picks.html">Picks</a>
+    <a href="standings.html">Standings</a>
+    <a href="admin.html">Admin</a>
+    <a href="pools.html" class="active">Pools</a>
+    <a href="index.html">Logout</a>
+  </div>
+  <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+  <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+  <main>
+    <h2>Your Pools</h2>
+    <div id="poolList" class="pool-list"></div>
+
+    <div class="pool-actions">
+      <button onclick="window.location.href='createPool.html'">Create New Pool</button>
+      <button onclick="window.location.href='joinPool.html'">Join Existing Pool</button>
+    </div>
+  </main>
+
+  <footer><p>&copy; 2025 NFL Survivor Pool</p></footer>
+
+  <script>
+  function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    const isActive = sidebar.classList.toggle("active");
+    overlay.classList.toggle("active", isActive);
+  }
+
+  const username = localStorage.getItem("loggedInUser") || "Guest";
+  const pools = JSON.parse(localStorage.getItem("pools")) || [];
+  const poolList = document.getElementById("poolList");
+
+  const myPools = pools.filter(p => p.members.some(m => m.username === username));
+
+  if (myPools.length === 0) {
+    poolList.innerHTML = "<p>You’re not in any pools yet. Create or join one below!</p>";
+  } else {
+    myPools.forEach(pool => {
+      const card = document.createElement("div");
+      card.classList.add("pool-card");
+      card.innerHTML = `
+        <h3>${pool.name}</h3>
+        <p><strong>Owner:</strong> ${pool.owner}</p>
+        <button onclick="enterPool('${pool.id}')">Enter Pool</button>
+      `;
+      poolList.appendChild(card);
+    });
+  }
+
+  function enterPool(id) {
+    localStorage.setItem("currentPoolId", id);
+    alert("Pool selected!");
+    window.location.href = "dashboard.html";
+  }
+  </script>
+</body>
+</html>
 
