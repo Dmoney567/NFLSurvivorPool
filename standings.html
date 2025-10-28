@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-<head> 
+<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Standings - Survivor Pool</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <!-- Sidebar -->
   <div id="sidebar" class="sidebar">
     <button class="close-btn" onclick="toggleSidebar()">×</button>
     <h2>NFL Survivor Pool</h2>
@@ -16,8 +17,12 @@
     <a href="admin.html">Admin</a>
     <a href="index.html">Logout</a>
   </div>
+
+  <!-- Hamburger Button -->
   <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-<div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+  <!-- Overlay -->
+  <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
 
   <main class="standings-container"> 
     <h2>Leaderboard</h2>
@@ -30,17 +35,60 @@
   <footer><p>&copy; 2025 NFL Survivor Pool</p></footer>
 
   <script>
-  function toggleSidebar(){document.getElementById("sidebar").classList.toggle("active");}
-  const players=JSON.parse(localStorage.getItem("players"))||[];
-  const maxWeeks=players.length?Math.max(...players.map(p=>p.picks.length)):1;
-  const header=document.getElementById("weeksHeader"),body=document.getElementById("standingsBody");
-  for(let w=1;w<=maxWeeks;w++){const th=document.createElement("th");th.textContent=`Week ${w}`;header.appendChild(th);}
-  players.forEach(p=>{const r=document.createElement("tr"),n=document.createElement("td");n.textContent=p.username;n.classList.add("name-cell");r.appendChild(n);
-  p.picks.forEach(pk=>{const c=document.createElement("td");c.classList.add("pick-cell");
-  if(pk.result==="win"){c.classList.add("win");c.textContent=pk.team;}
-  else if(pk.result==="loss"){c.classList.add("loss");c.textContent=pk.team;}
-  else if(pk.result==="locked"){c.classList.add("future-locked");c.textContent="-";}
-  else c.textContent=pk.team||"";r.appendChild(c);});body.appendChild(r);});
+  // ✅ Sidebar + overlay fix
+  function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    const isActive = sidebar.classList.toggle("active");
+    overlay.classList.toggle("active", isActive);
+  }
+
+  // ====== Standings logic ======
+  const players = JSON.parse(localStorage.getItem("players")) || [];
+  const maxWeeks = players.length ? Math.max(...players.map(p => p.picks.length)) : 1;
+  const header = document.getElementById("weeksHeader");
+  const body = document.getElementById("standingsBody");
+
+  // Create week headers
+  for (let w = 1; w <= maxWeeks; w++) {
+    const th = document.createElement("th");
+    th.textContent = `Week ${w}`;
+    header.appendChild(th);
+  }
+
+  // Populate player rows
+  players.forEach(p => {
+    const r = document.createElement("tr");
+    const n = document.createElement("td");
+    n.textContent = p.username;
+    n.classList.add("name-cell");
+    r.appendChild(n);
+
+    for (let w = 1; w <= maxWeeks; w++) {
+      const pick = p.picks.find(pk => pk.week === w);
+      const c = document.createElement("td");
+      c.classList.add("pick-cell");
+
+      if (!pick) {
+        c.textContent = "-";
+      } else if (pick.result === "win") {
+        c.textContent = pick.team;
+        c.classList.add("win");
+      } else if (pick.result === "loss") {
+        c.textContent = pick.team;
+        c.classList.add("loss");
+      } else if (pick.result === "locked") {
+        c.textContent = "-";
+        c.classList.add("future-locked");
+      } else {
+        c.textContent = pick.team;
+      }
+
+      r.appendChild(c);
+    }
+
+    body.appendChild(r);
+  });
   </script>
 </body>
 </html>
