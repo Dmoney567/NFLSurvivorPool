@@ -15,19 +15,20 @@
     <a href="picks.html">Picks</a>
     <a href="standings.html" class="active">Standings</a>
     <a href="admin.html">Admin</a>
+    <a href="pools.html">Pools</a>
     <a href="index.html">Logout</a>
   </div>
-
-  <!-- Hamburger Button -->
   <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-
-  <!-- Overlay -->
   <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
 
-  <main class="standings-container"> 
-    <h2>Leaderboard</h2>
+  <main class="standings-container">
+    <h2>Pool Standings</h2>
+    <div id="poolInfo" class="dashboard-card"></div>
+
     <table id="standingsTable">
-      <thead><tr id="weeksHeader"><th>Player</th></tr></thead>
+      <thead>
+        <tr id="weeksHeader"><th>Player</th></tr>
+      </thead>
       <tbody id="standingsBody"></tbody>
     </table>
   </main>
@@ -35,7 +36,9 @@
   <footer><p>&copy; 2025 NFL Survivor Pool</p></footer>
 
   <script>
-  // ✅ Sidebar + overlay fix
+  // =====================
+  // Sidebar
+  // =====================
   function toggleSidebar() {
     const sidebar = document.getElementById("sidebar");
     const overlay = document.getElementById("overlay");
@@ -43,52 +46,82 @@
     overlay.classList.toggle("active", isActive);
   }
 
-  // ====== Standings logic ======
-  const players = JSON.parse(localStorage.getItem("players")) || [];
-  const maxWeeks = players.length ? Math.max(...players.map(p => p.picks.length)) : 1;
+  // =====================
+  // Pool Data
+  // =====================
+  const pools = JSON.parse(localStorage.getItem("pools")) || [];
+  const poolId = localStorage.getItem("currentPoolId");
+  const pool = pools.find(p => p.id === poolId);
+  const poolInfo = document.getElementById("poolInfo");
   const header = document.getElementById("weeksHeader");
   const body = document.getElementById("standingsBody");
 
-  // Create week headers
-  for (let w = 1; w <= maxWeeks; w++) {
-    const th = document.createElement("th");
-    th.textContent = `Week ${w}`;
-    header.appendChild(th);
+  if (!pool) {
+    poolInfo.innerHTML = "<p>No pool selected. Go to Pools page to select one.</p>";
+  } else {
+    poolInfo.innerHTML = `
+      <p><strong>Pool:</strong> ${pool.name}</p>
+      <p><strong>Owner:</strong> ${pool.owner}</p>
+      <p><strong>Current Week:</strong> ${pool.currentWeek}</p>
+    `;
+
+    renderStandings();
   }
 
-  // Populate player rows
-  players.forEach(p => {
-    const r = document.createElement("tr");
-    const n = document.createElement("td");
-    n.textContent = p.username;
-    n.classList.add("name-cell");
-    r.appendChild(n);
+  // =====================
+  // Render Table
+  // =====================
+  function renderStandings() {
+    body.innerHTML = "";
+    header.innerHTML = "<th>Player</th>";
 
+    // Find max week any member has picks for
+    const maxWeeks = pool.members.reduce((max, m) => {
+      const lastPickWeek = m.picks.length ? Math.max(...m.picks.map(p => p.week)) : 0;
+      return Math.max(max, lastPickWeek);
+    }, pool.currentWeek);
+
+    // Create week columns
     for (let w = 1; w <= maxWeeks; w++) {
-      const pick = p.picks.find(pk => pk.week === w);
-      const c = document.createElement("td");
-      c.classList.add("pick-cell");
-
-      if (!pick) {
-        c.textContent = "-";
-      } else if (pick.result === "win") {
-        c.textContent = pick.team;
-        c.classList.add("win");
-      } else if (pick.result === "loss") {
-        c.textContent = pick.team;
-        c.classList.add("loss");
-      } else if (pick.result === "locked") {
-        c.textContent = "-";
-        c.classList.add("future-locked");
-      } else {
-        c.textContent = pick.team;
-      }
-
-      r.appendChild(c);
+      const th = document.createElement("th");
+      th.textContent = "Week " + w;
+      header.appendChild(th);
     }
 
-    body.appendChild(r);
-  });
+    // Render members
+    pool.members.forEach(member => {
+      const row = document.createElement("tr");
+      const nameCell = document.createElement("td");
+      nameCell.textContent = member.username + (member.role === "owner" ? " ⭐" : "");
+      nameCell.classList.add("name-cell");
+      row.appendChild(nameCell);
+
+      for (let w = 1; w <= maxWeeks; w++) {
+        const pick = member.picks.find(p => p.week === w);
+        const cell = document.createElement("td");
+        cell.classList.add("pick-cell");
+
+        if (!pick) {
+          cell.textContent = "-";
+        } else if (pick.result === "win") {
+          cell.textContent = pick.team;
+          cell.classList.add("win");
+        } else if (pick.result === "loss") {
+          cell.textContent = pick.team;
+          cell.classList.add("loss");
+        } else if (pick.result === "locked") {
+          cell.textContent = "-";
+          cell.classList.add("future-locked");
+        } else {
+          cell.textContent = pick.team;
+        }
+
+        row.appendChild(cell);
+      }
+
+      body.appendChild(row);
+    });
+  }
   </script>
 </body>
 </html>
