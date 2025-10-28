@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Join Pool - Survivor Pool</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="sidebar" class="sidebar">
+    <button class="close-btn" onclick="toggleSidebar()">×</button>
+    <h2>NFL Survivor Pool</h2>
+    <a href="pools.html">← Back to Pools</a>
+  </div>
+  <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+  <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+  <main>
+    <h2>Join an Existing Pool</h2>
+    <form id="joinForm" class="pool-form">
+      <label>Pool Name:</label>
+      <input type="text" id="joinName" required />
+
+      <label>Password:</label>
+      <input type="password" id="joinPassword" required />
+
+      <button type="submit">Join Pool</button>
+    </form>
+  </main>
+
+  <footer><p>&copy; 2025 NFL Survivor Pool</p></footer>
+
+  <script>
+  function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    const isActive = sidebar.classList.toggle("active");
+    overlay.classList.toggle("active", isActive);
+  }
+
+  document.getElementById("joinForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = document.getElementById("joinName").value.trim();
+    const password = document.getElementById("joinPassword").value;
+    const username = localStorage.getItem("loggedInUser") || "Guest";
+
+    const pools = JSON.parse(localStorage.getItem("pools")) || [];
+    const pool = pools.find(p => p.name === name && p.password === password);
+
+    if (!pool) {
+      alert("Incorrect pool name or password.");
+      return;
+    }
+
+    if (pool.members.some(m => m.username === username)) {
+      alert("You’re already in this pool!");
+      return;
+    }
+
+    pool.members.push({ username, picks: [], alive: true, role: "member" });
+    localStorage.setItem("pools", JSON.stringify(pools));
+    localStorage.setItem("currentPoolId", pool.id);
+
+    alert("You joined the pool successfully!");
+    window.location.href = "pools.html";
+  });
+  </script>
+</body>
+</html>
