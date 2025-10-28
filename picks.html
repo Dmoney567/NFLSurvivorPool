@@ -7,19 +7,23 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <header>
-    <h1>NFL Survivor Pool</h1>
-    <nav>
-      <a href="dashboard.html">Dashboard</a>
-      <a href="picks.html" class="active">Picks</a>
-      <a href="standings.html">Standings</a>
-      <a href="admin.html">Admin</a>
-      <a href="index.html">Logout</a>
-    </nav>
-  </header>
+  <!-- Sidebar -->
+  <div id="sidebar" class="sidebar">
+    <button class="close-btn" onclick="toggleSidebar()">×</button>
+    <h2>NFL Survivor Pool</h2>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="picks.html" class="active">Picks</a>
+    <a href="standings.html">Standings</a>
+    <a href="admin.html">Admin</a>
+    <a href="index.html">Logout</a>
+  </div>
+
+  <!-- Hamburger Button -->
+  <button class="menu-btn" onclick="toggleSidebar()">☰</button>
 
   <main>
     <h2>Make Your Pick</h2>
+    <p id="weekDisplay"></p>
     <p>Select one team below. You can only pick one per week.</p>
 
     <div id="matchupsContainer" class="matchups-container"></div>
@@ -32,25 +36,31 @@
   </footer>
 
   <script>
+  function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("active");
+  }
+
   const matchups = JSON.parse(localStorage.getItem("matchups")) || [];
   const container = document.getElementById("matchupsContainer");
   const submitBtn = document.getElementById("submitPickBtn");
   const chosenDisplay = document.getElementById("chosenDisplay");
+  const weekDisplay = document.getElementById("weekDisplay");
 
   let chosenTeam = localStorage.getItem("chosenTeam") || "";
+  let currentWeek = parseInt(localStorage.getItem("currentWeek")) || 1;
 
-  // ==========================
-  // Render Matchups
-  // ==========================
+  weekDisplay.textContent = `Current Week: ${currentWeek}`;
+
   function renderMatchups() {
     container.innerHTML = "";
 
-    if (matchups.length === 0) {
+    const weekMatchups = matchups.filter(m => m.week === currentWeek);
+    if (weekMatchups.length === 0) {
       container.innerHTML = "<p>No matchups available yet. Check back later!</p>";
       return;
     }
 
-    matchups.forEach((m) => {
+    weekMatchups.forEach((m) => {
       const home = m.home;
       const away = m.away;
       const spread = parseFloat(m.spread);
@@ -58,26 +68,22 @@
 
       if (!isNaN(spread)) {
         if (spread < 0) {
-          // Home is favored
           leftTeam = home;
           rightTeam = away;
           displaySpread = `-${Math.abs(spread)}`;
           middleText = "vs";
         } else if (spread > 0) {
-          // Away is favored
           leftTeam = away;
           rightTeam = home;
           displaySpread = `-${Math.abs(spread)}`;
           middleText = "@";
         } else {
-          // Pick'em
           leftTeam = home;
           rightTeam = away;
           displaySpread = "";
           middleText = "vs";
         }
       } else {
-        // No valid spread
         leftTeam = home;
         rightTeam = away;
         displaySpread = "";
@@ -104,9 +110,6 @@
     }
   }
 
-  // ==========================
-  // Choose Team
-  // ==========================
   function chooseTeam(team) {
     chosenTeam = team;
     localStorage.setItem("chosenTeam", team);
@@ -118,30 +121,19 @@
     if (selectedBtn) selectedBtn.classList.add("selected");
   }
 
-  // ==========================
-  // Submit Pick — connects to standings
-  // ==========================
   submitBtn.addEventListener("click", () => {
-    const username = localStorage.getItem("username") || "Dominic"; // Temporary username until login is added
+    const username = localStorage.getItem("username") || "Dominic";
     const chosenTeamAbbr = chosenTeam.substring(0, 3).toUpperCase();
-    const currentWeek = 1; // Later can auto-update with a date system
-
     let players = JSON.parse(localStorage.getItem("players")) || [];
-
-    // Find or create player
     let player = players.find(p => p.username === username);
     if (!player) {
       player = { username, picks: [], alive: true };
       players.push(player);
     }
-
-    // Block eliminated players
     if (!player.alive) {
       alert("You’ve been eliminated and cannot make further picks.");
       return;
     }
-
-    // Update or add this week's pick
     const existingPick = player.picks.find(p => p.week === currentWeek);
     if (existingPick) {
       existingPick.team = chosenTeamAbbr;
@@ -149,9 +141,8 @@
     } else {
       player.picks.push({ week: currentWeek, team: chosenTeamAbbr, result: "pending" });
     }
-
     localStorage.setItem("players", JSON.stringify(players));
-    alert(`You submitted your pick: ${chosenTeamAbbr}`);
+    alert(`You submitted your Week ${currentWeek} pick: ${chosenTeamAbbr}`);
   });
 
   renderMatchups();
