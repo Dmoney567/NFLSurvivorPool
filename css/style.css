@@ -402,3 +402,26 @@ main p {
   outline: none;
   box-shadow: 0 0 5px rgba(0,122,255,0.3);
 }
+#membersTable {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  margin-top: 20px;
+}
+
+#membersTable th, #membersTable td {
+  border: 1px solid #e6e6e6;
+  padding: 10px;
+  text-align: center;
+}
+
+#membersTable th {
+  background: var(--primary);
+  color: white;
+}
+
+#membersTable tr:nth-child(even) {
+  background: #f5f8ff;
+}
