@@ -17,8 +17,12 @@
     <a href="admin.html" class="active">Admin</a>
     <a href="index.html">Logout</a>
   </div>
+
+  <!-- Hamburger Button -->
   <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-<div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+  <!-- Overlay (background dim when sidebar opens) -->
+  <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
 
   <main>
     <h2>Manage Matchups</h2>
@@ -38,7 +42,15 @@
     </div>
 
     <table id="adminGamesTable">
-      <thead><tr><th>Home</th><th>Away</th><th>Spread</th><th>Winner</th><th>Action</th></tr></thead>
+      <thead>
+        <tr>
+          <th>Home</th>
+          <th>Away</th>
+          <th>Spread</th>
+          <th>Winner</th>
+          <th>Action</th>
+        </tr>
+      </thead>
       <tbody></tbody>
     </table>
   </main>
@@ -46,28 +58,156 @@
   <footer><p>&copy; 2025 NFL Survivor Pool</p></footer>
 
   <script>
-  function toggleSidebar() { document.getElementById("sidebar").classList.toggle("active"); }
+  // ✅ Fixed toggle function for sidebar + overlay
+  function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    const isActive = sidebar.classList.toggle("active");
+    overlay.classList.toggle("active", isActive);
+  }
 
-  const teams = ["49ers","Bears","Bengals","Bills","Broncos","Browns","Buccaneers","Cardinals",
-  "Chargers","Chiefs","Colts","Commanders","Cowboys","Dolphins","Eagles","Falcons","Giants",
-  "Jaguars","Jets","Lions","Packers","Panthers","Patriots","Raiders","Rams","Ravens","Saints",
-  "Seahawks","Steelers","Texans","Titans","Vikings"];
-  const weekSelect=document.getElementById("weekSelect");
-  for(let i=1;i<=18;i++){const o=document.createElement("option");o.value=i;o.textContent=`Week ${i}`;weekSelect.appendChild(o);}
-  let currentWeek=parseInt(localStorage.getItem("currentWeek"))||1;
-  weekSelect.value=currentWeek; weekSelect.addEventListener("change",()=>{currentWeek=parseInt(weekSelect.value);localStorage.setItem("currentWeek",currentWeek);renderMatchups();});
-  const homeSelect=document.getElementById("homeTeamSelect"),awaySelect=document.getElementById("awayTeamSelect"),spreadInput=document.getElementById("spreadInput"),favoredSelect=document.getElementById("favoredSelect"),addBtn=document.getElementById("addMatchupBtn"),clearAllBtn=document.getElementById("clearAllBtn"),tableBody=document.querySelector("#adminGamesTable tbody");
-  teams.forEach(t=>{const o1=document.createElement("option");o1.value=o1.textContent=t;homeSelect.appendChild(o1);const o2=document.createElement("option");o2.value=o2.textContent=t;awaySelect.appendChild(o2);});
-  let matchups=JSON.parse(localStorage.getItem("matchups"))||[];
-  function renderMatchups(){tableBody.innerHTML="";const weekGames=matchups.filter(m=>m.week===currentWeek);if(!weekGames.length){tableBody.innerHTML=`<tr><td colspan="5">No matchups for Week ${currentWeek}</td></tr>`;return;}weekGames.forEach((m,i)=>{const r=document.createElement("tr");r.innerHTML=`<td>${m.home}</td><td>${m.away}</td><td>${m.spread}</td>
-<td><select id="winnerSelect${i}"><option value="">Select Winner</option><option value="${m.home}">${m.home}</option><option value="${m.away}">${m.away}</option></select>
-<button onclick="setWinner(${i})">Set</button></td><td><button onclick="removeMatchup(${i})" class="danger-btn">Remove</button></td>`;tableBody.appendChild(r);});}
-  addBtn.onclick=()=>{const home=homeSelect.value,away=awaySelect.value,spreadVal=parseFloat(spreadInput.value),fav=favoredSelect.value;if(!home||!away)return alert("Select teams");if(home===away)return alert("Teams must differ");if(isNaN(spreadVal))return alert("Enter spread");const s=fav==="home"?-Math.abs(spreadVal):Math.abs(spreadVal);matchups.push({week:currentWeek,home,away,spread:s,winner:""});localStorage.setItem("matchups",JSON.stringify(matchups));renderMatchups();};
-  function removeMatchup(i){matchups.splice(i,1);localStorage.setItem("matchups",JSON.stringify(matchups));renderMatchups();}
-  clearAllBtn.onclick=()=>{if(confirm("Clear all matchups?")){matchups=[];localStorage.removeItem("matchups");renderMatchups();}};
-  function setWinner(i){const games=matchups.filter(m=>m.week===currentWeek),winner=document.getElementById(`winnerSelect${i}`).value;if(!winner)return alert("Select winner");games[i].winner=winner;const idx=matchups.findIndex(m=>m.week===currentWeek&&m.home===games[i].home&&m.away===games[i].away);matchups[idx]=games[i];localStorage.setItem("matchups",JSON.stringify(matchups));
-  let players=JSON.parse(localStorage.getItem("players"))||[];players.forEach(p=>{p.picks.forEach(pk=>{if(pk.week===currentWeek&&pk.result==="pending"){const w=winner.substring(0,3).toUpperCase(),t=pk.team.substring(0,3).toUpperCase();if(t===w)pk.result="win";else{pk.result="loss";p.alive=false;}}});if(!p.alive)p.picks.forEach(pk=>{if(pk.week>currentWeek&&pk.result==="pending")pk.result="locked";});});
-  localStorage.setItem("players",JSON.stringify(players));alert(`Winner set: ${winner} for Week ${currentWeek}`);}
+  // ==========================
+  // ADMIN SCRIPT
+  // ==========================
+  const teams = [
+    "49ers","Bears","Bengals","Bills","Broncos","Browns","Buccaneers","Cardinals",
+    "Chargers","Chiefs","Colts","Commanders","Cowboys","Dolphins","Eagles","Falcons",
+    "Giants","Jaguars","Jets","Lions","Packers","Panthers","Patriots","Raiders",
+    "Rams","Ravens","Saints","Seahawks","Steelers","Texans","Titans","Vikings"
+  ];
+
+  const weekSelect = document.getElementById("weekSelect");
+  for (let i = 1; i <= 18; i++) {
+    const o = document.createElement("option");
+    o.value = i;
+    o.textContent = `Week ${i}`;
+    weekSelect.appendChild(o);
+  }
+
+  let currentWeek = parseInt(localStorage.getItem("currentWeek")) || 1;
+  weekSelect.value = currentWeek;
+
+  weekSelect.addEventListener("change", () => {
+    currentWeek = parseInt(weekSelect.value);
+    localStorage.setItem("currentWeek", currentWeek);
+    renderMatchups();
+  });
+
+  const homeSelect = document.getElementById("homeTeamSelect");
+  const awaySelect = document.getElementById("awayTeamSelect");
+  const spreadInput = document.getElementById("spreadInput");
+  const favoredSelect = document.getElementById("favoredSelect");
+  const addBtn = document.getElementById("addMatchupBtn");
+  const clearAllBtn = document.getElementById("clearAllBtn");
+  const tableBody = document.querySelector("#adminGamesTable tbody");
+
+  teams.forEach(t => {
+    const o1 = document.createElement("option");
+    o1.value = o1.textContent = t;
+    homeSelect.appendChild(o1);
+
+    const o2 = document.createElement("option");
+    o2.value = o2.textContent = t;
+    awaySelect.appendChild(o2);
+  });
+
+  let matchups = JSON.parse(localStorage.getItem("matchups")) || [];
+
+  function renderMatchups() {
+    tableBody.innerHTML = "";
+    const weekGames = matchups.filter(m => m.week === currentWeek);
+
+    if (!weekGames.length) {
+      tableBody.innerHTML = `<tr><td colspan="5">No matchups for Week ${currentWeek}</td></tr>`;
+      return;
+    }
+
+    weekGames.forEach((m, i) => {
+      const r = document.createElement("tr");
+      r.innerHTML = `
+        <td>${m.home}</td>
+        <td>${m.away}</td>
+        <td>${m.spread}</td>
+        <td>
+          <select id="winnerSelect${i}">
+            <option value="">Select Winner</option>
+            <option value="${m.home}">${m.home}</option>
+            <option value="${m.away}">${m.away}</option>
+          </select>
+          <button onclick="setWinner(${i})">Set</button>
+        </td>
+        <td><button onclick="removeMatchup(${i})" class="danger-btn">Remove</button></td>
+      `;
+      tableBody.appendChild(r);
+    });
+  }
+
+  addBtn.onclick = () => {
+    const home = homeSelect.value;
+    const away = awaySelect.value;
+    const spreadVal = parseFloat(spreadInput.value);
+    const fav = favoredSelect.value;
+
+    if (!home || !away) return alert("Select both teams");
+    if (home === away) return alert("Teams must be different");
+    if (isNaN(spreadVal)) return alert("Enter a valid spread");
+
+    const s = fav === "home" ? -Math.abs(spreadVal) : Math.abs(spreadVal);
+    matchups.push({ week: currentWeek, home, away, spread: s, winner: "" });
+    localStorage.setItem("matchups", JSON.stringify(matchups));
+    renderMatchups();
+  };
+
+  function removeMatchup(i) {
+    matchups.splice(i, 1);
+    localStorage.setItem("matchups", JSON.stringify(matchups));
+    renderMatchups();
+  }
+
+  clearAllBtn.onclick = () => {
+    if (confirm("Clear all matchups?")) {
+      matchups = [];
+      localStorage.removeItem("matchups");
+      renderMatchups();
+    }
+  };
+
+  function setWinner(i) {
+    const games = matchups.filter(m => m.week === currentWeek);
+    const winner = document.getElementById(`winnerSelect${i}`).value;
+    if (!winner) return alert("Select a winner first.");
+
+    games[i].winner = winner;
+    const idx = matchups.findIndex(
+      m => m.week === currentWeek && m.home === games[i].home && m.away === games[i].away
+    );
+    matchups[idx] = games[i];
+    localStorage.setItem("matchups", JSON.stringify(matchups));
+
+    let players = JSON.parse(localStorage.getItem("players")) || [];
+    players.forEach(p => {
+      p.picks.forEach(pk => {
+        if (pk.week === currentWeek && pk.result === "pending") {
+          const w = winner.substring(0, 3).toUpperCase();
+          const t = pk.team.substring(0, 3).toUpperCase();
+          if (t === w) pk.result = "win";
+          else {
+            pk.result = "loss";
+            p.alive = false;
+          }
+        }
+      });
+      if (!p.alive) {
+        p.picks.forEach(pk => {
+          if (pk.week > currentWeek && pk.result === "pending") pk.result = "locked";
+        });
+      }
+    });
+
+    localStorage.setItem("players", JSON.stringify(players));
+    alert(`Winner set: ${winner} for Week ${currentWeek}`);
+  }
+
   renderMatchups();
   </script>
 </body>
