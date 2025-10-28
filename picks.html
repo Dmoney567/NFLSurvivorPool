@@ -48,12 +48,10 @@
 
   let chosenTeam = localStorage.getItem("chosenTeam") || "";
   let currentWeek = parseInt(localStorage.getItem("currentWeek")) || 1;
-
   weekDisplay.textContent = `Current Week: ${currentWeek}`;
 
   function renderMatchups() {
     container.innerHTML = "";
-
     const weekMatchups = matchups.filter(m => m.week === currentWeek);
     if (weekMatchups.length === 0) {
       container.innerHTML = "<p>No matchups available yet. Check back later!</p>";
@@ -61,34 +59,13 @@
     }
 
     weekMatchups.forEach((m) => {
-      const home = m.home;
-      const away = m.away;
-      const spread = parseFloat(m.spread);
+      const home = m.home, away = m.away, spread = parseFloat(m.spread);
       let leftTeam, rightTeam, displaySpread, middleText;
-
       if (!isNaN(spread)) {
-        if (spread < 0) {
-          leftTeam = home;
-          rightTeam = away;
-          displaySpread = `-${Math.abs(spread)}`;
-          middleText = "vs";
-        } else if (spread > 0) {
-          leftTeam = away;
-          rightTeam = home;
-          displaySpread = `-${Math.abs(spread)}`;
-          middleText = "@";
-        } else {
-          leftTeam = home;
-          rightTeam = away;
-          displaySpread = "";
-          middleText = "vs";
-        }
-      } else {
-        leftTeam = home;
-        rightTeam = away;
-        displaySpread = "";
-        middleText = "vs";
-      }
+        if (spread < 0) { leftTeam = home; rightTeam = away; displaySpread = `-${Math.abs(spread)}`; middleText = "vs"; }
+        else if (spread > 0) { leftTeam = away; rightTeam = home; displaySpread = `-${Math.abs(spread)}`; middleText = "@"; }
+        else { leftTeam = home; rightTeam = away; displaySpread = ""; middleText = "vs"; }
+      } else { leftTeam = home; rightTeam = away; displaySpread = ""; middleText = "vs"; }
 
       const matchupDiv = document.createElement("div");
       matchupDiv.classList.add("matchup");
@@ -115,7 +92,6 @@
     localStorage.setItem("chosenTeam", team);
     chosenDisplay.innerText = `You picked: ${team}`;
     submitBtn.disabled = false;
-
     document.querySelectorAll(".team-btn").forEach(btn => btn.classList.remove("selected"));
     const selectedBtn = [...document.querySelectorAll(".team-btn")].find(b => b.textContent === team);
     if (selectedBtn) selectedBtn.classList.add("selected");
@@ -126,21 +102,11 @@
     const chosenTeamAbbr = chosenTeam.substring(0, 3).toUpperCase();
     let players = JSON.parse(localStorage.getItem("players")) || [];
     let player = players.find(p => p.username === username);
-    if (!player) {
-      player = { username, picks: [], alive: true };
-      players.push(player);
-    }
-    if (!player.alive) {
-      alert("You’ve been eliminated and cannot make further picks.");
-      return;
-    }
+    if (!player) { player = { username, picks: [], alive: true }; players.push(player); }
+    if (!player.alive) return alert("You’ve been eliminated and cannot make further picks.");
     const existingPick = player.picks.find(p => p.week === currentWeek);
-    if (existingPick) {
-      existingPick.team = chosenTeamAbbr;
-      existingPick.result = "pending";
-    } else {
-      player.picks.push({ week: currentWeek, team: chosenTeamAbbr, result: "pending" });
-    }
+    if (existingPick) { existingPick.team = chosenTeamAbbr; existingPick.result = "pending"; }
+    else { player.picks.push({ week: currentWeek, team: chosenTeamAbbr, result: "pending" }); }
     localStorage.setItem("players", JSON.stringify(players));
     alert(`You submitted your Week ${currentWeek} pick: ${chosenTeamAbbr}`);
   });
