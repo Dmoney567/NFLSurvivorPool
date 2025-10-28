@@ -5,196 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Standings - Survivor Pool</title>
   <link rel="stylesheet" href="css/style.css" />
-  <style>
-    .standings-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 30px;
-    }
-
-    table {
-      border-collapse: collapse;
-      width: 95%;
-      max-width: 900px;
-      text-align: center;
-      background-color: #fff;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    th, td {
-      border: 1px solid #ddd;
-      padding: 10px;
-    }
-
-    th {
-      background-color: #004080;
-      color: white;
-    }
-
-    td.name-cell {
-      font-weight: bold;
-      text-align: left;
-      padding-left: 15px;
-      background-color: #f8f9fa;
-    }
-
-    .pick-cell {
-      min-width: 60px;
-      font-weight: bold;
-    }
-
-    .win {
-      background-color: #d4edda;
-      color: #155724;
-    }
-
-    .loss {
-      background-color: #f8d7da;
-      color: #721c24;
-      text-decoration: line-through;
-    }
-
-    .future-locked {
-      background-color: #e2e3e5;
-      color: #6c757d;
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-  </style>
 </head>
 <body>
-  <header>
-    <h1>Current Standings</h1>
-    <nav>
-      <a href="dashboard.html">Dashboard</a>
-      <a href="picks.html">Make Pick</a>
-      <a href="admin.html">Admin</a>
-      <a href="index.html">Logout</a>
-    </nav>
-  </header>
+  <div id="sidebar" class="sidebar">
+    <button class="close-btn" onclick="toggleSidebar()">×</button>
+    <h2>NFL Survivor Pool</h2>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="picks.html">Picks</a>
+    <a href="standings.html" class="active">Standings</a>
+    <a href="admin.html">Admin</a>
+    <a href="index.html">Logout</a>
+  </div>
+  <button class="menu-btn" onclick="toggleSidebar()">☰</button>
 
   <main class="standings-container"> 
     <h2>Leaderboard</h2>
     <table id="standingsTable">
-      <thead>
-        <tr id="weeksHeader">
-          <th>Player</th>
-        </tr>
-      </thead>
+      <thead><tr id="weeksHeader"><th>Player</th></tr></thead>
       <tbody id="standingsBody"></tbody>
     </table>
   </main>
 
-  <footer>
-    <p>&copy; 2025 NFL Survivor Pool</p>
-  </footer>
+  <footer><p>&copy; 2025 NFL Survivor Pool</p></footer>
 
   <script>
-    // ============================================
-    // Example: how your data might be stored
-    // ============================================
-    // localStorage.setItem("players", JSON.stringify([
-    //   { username: "Dominic", picks: [{week:1, team:"DET", result:"win"}], alive:true },
-    //   { username: "Alex", picks: [{week:1, team:"KC", result:"loss"}], alive:false }
-    // ]));
-
-    // Get players data from localStorage
-    const players = JSON.parse(localStorage.getItem("players")) || [];
-
-    // If no data yet, create sample so page has something
-    if (players.length === 0) {
-      const sample = [
-        {
-          username: "Dominic",
-          picks: [
-            { week: 1, team: "DET", result: "win" },
-            { week: 2, team: "KC", result: "loss" },
-            { week: 3, team: "", result: "locked" }
-          ],
-          alive: false
-        },
-        {
-          username: "Kroif",
-          picks: [
-            { week: 1, team: "SF", result: "win" },
-            { week: 2, team: "BUF", result: "win" },
-            { week: 3, team: "DAL", result: "pending" }
-          ],
-          alive: true
-        }
-      ];
-      localStorage.setItem("players", JSON.stringify(sample));
-    }
-
-    const playerData = JSON.parse(localStorage.getItem("players"));
-    const maxWeeks = Math.max(...playerData.map(p => p.picks.length));
-
-    // Build table headers
-    const weeksHeader = document.getElementById("weeksHeader");
-    for (let w = 1; w <= maxWeeks; w++) {
-      const th = document.createElement("th");
-      th.textContent = `Week ${w}`;
-      weeksHeader.appendChild(th);
-    }
-
-    const body = document.getElementById("standingsBody");
-
-    // Render each player's row
-    playerData.forEach(player => {
-      const row = document.createElement("tr");
-
-      // Player name
-      const nameCell = document.createElement("td");
-      nameCell.textContent = player.username;
-      nameCell.classList.add("name-cell");
-      row.appendChild(nameCell);
-
-      // Each week
-      player.picks.forEach(pick => {
-        const cell = document.createElement("td");
-        cell.classList.add("pick-cell");
-
-        if (pick.result === "win") {
-          cell.classList.add("win");
-          cell.textContent = pick.team;
-        } else if (pick.result === "loss") {
-          cell.classList.add("loss");
-          cell.textContent = pick.team;
-        } else if (pick.result === "locked") {
-          cell.classList.add("future-locked");
-          cell.textContent = "-";
-        } else {
-          cell.textContent = pick.team || "";
-        }
-
-        row.appendChild(cell);
-      });
-
-      body.appendChild(row);
-    });
-
-    // ============================================
-    // Handle eliminating players after a loss
-    // ============================================
-    playerData.forEach(player => {
-      const lost = player.picks.some(p => p.result === "loss");
-      if (lost) {
-        player.alive = false;
-        player.picks.forEach(p => {
-          if (!["win", "loss"].includes(p.result)) {
-            p.result = "locked";
-          }
-        });
-      }
-    });
-
-    localStorage.setItem("players", JSON.stringify(playerData));
+  function toggleSidebar(){document.getElementById("sidebar").classList.toggle("active");}
+  const players=JSON.parse(localStorage.getItem("players"))||[];
+  const maxWeeks=players.length?Math.max(...players.map(p=>p.picks.length)):1;
+  const header=document.getElementById("weeksHeader"),body=document.getElementById("standingsBody");
+  for(let w=1;w<=maxWeeks;w++){const th=document.createElement("th");th.textContent=`Week ${w}`;header.appendChild(th);}
+  players.forEach(p=>{const r=document.createElement("tr"),n=document.createElement("td");n.textContent=p.username;n.classList.add("name-cell");r.appendChild(n);
+  p.picks.forEach(pk=>{const c=document.createElement("td");c.classList.add("pick-cell");
+  if(pk.result==="win"){c.classList.add("win");c.textContent=pk.team;}
+  else if(pk.result==="loss"){c.classList.add("loss");c.textContent=pk.team;}
+  else if(pk.result==="locked"){c.classList.add("future-locked");c.textContent="-";}
+  else c.textContent=pk.team||"";r.appendChild(c);});body.appendChild(r);});
   </script>
 </body>
 </html>
