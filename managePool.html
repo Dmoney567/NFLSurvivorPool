@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage Pool - Survivor Pool</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- Sidebar -->
+  <div id="sidebar" class="sidebar">
+    <button class="close-btn" onclick="toggleSidebar()">×</button>
+    <h2>NFL Survivor Pool</h2>
+    <a href="pools.html">Pools</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="picks.html">Picks</a>
+    <a href="standings.html">Standings</a>
+    <a href="admin.html">Admin</a>
+    <a href="index.html">Logout</a>
+  </div>
+  <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+  <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
+  <main>
+    <h2>Manage Your Pool</h2>
+    <div id="poolDetails" class="dashboard-card"></div>
+
+    <h3>Members</h3>
+    <table id="membersTable">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="admin-controls">
+      <button id="advanceWeekBtn">Advance Week</button>
+    </div>
+  </main>
+
+  <footer><p>&copy; 2025 NFL Survivor Pool</p></footer>
+
+  <script>
+  function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    const isActive = sidebar.classList.toggle("active");
+    overlay.classList.toggle("active", isActive);
+  }
+
+  const pools = JSON.parse(localStorage.getItem("pools")) || [];
+  const poolId = localStorage.getItem("currentPoolId");
+  const username = localStorage.getItem("loggedInUser");
+  const pool = pools.find(p => p.id === poolId);
+
+  const poolDetails = document.getElementById("poolDetails");
+  const membersTable = document.querySelector("#membersTable tbody");
+
+  if (!pool) {
+    poolDetails.innerHTML = "<p>No pool selected. Go back to Pools.</p>";
+  } else {
+    poolDetails.innerHTML = `
+      <p><strong>Pool Name:</strong> ${pool.name}</p>
+      <p><strong>Owner:</strong> ${pool.owner}</p>
+      <p><strong>Current Week:</strong> ${pool.currentWeek}</p>
+    `;
+
+    renderMembers();
+  }
+
+  function renderMembers() {
+    membersTable.innerHTML = "";
+    pool.members.forEach((m, i) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${m.username}</td>
+        <td>${m.alive ? "Alive" : "Eliminated"}</td>
+        <td>
+          ${pool.owner === username && m.username !== username
+            ? `<button onclick="kickMember('${m.username}')">Kick</button>
+               <button onclick="changePick('${m.username}')">Change Pick</button>`
+            : ""}
+        </td>
+      `;
+      membersTable.appendChild(row);
+    });
+  }
+
+  function kickMember(user) {
+    if (!confirm(\`Remove \${user} from the pool?\`)) return;
+    pool.members = pool.members.filter(m => m.username !== user);
+    savePools();
+    renderMembers();
+  }
+
+  function changePick(user) {
+    const week = prompt("Enter week number to edit:");
+    if (!week) return;
+    const team = prompt("Enter new team abbreviation (e.g. KC, DET):");
+    if (!team) return;
+
+    const member = pool.members.find(m => m.username === user);
+    const pick = member.picks.find(p => p.week == week);
+    if (pick) pick.team = team.toUpperCase();
+    else member.picks.push({ week: parseInt(week), team: team.toUpperCase(), result: "pending" });
+
+    savePools();
+    alert(\`Updated \${user}'s Week \${week} pick to \${team.toUpperCase()}.\`);
+  }
+
+  document.getElementById("advanceWeekBtn").addEventListener("click", () => {
+    if (pool.owner !== username) return alert("Only the pool owner can advance the week!");
+    pool.currentWeek++;
+    savePools();
+    alert("Advanced to Week " + pool.currentWeek);
+    poolDetails.innerHTML = `
+      <p><strong>Pool Name:</strong> ${pool.name}</p>
+      <p><strong>Owner:</strong> ${pool.owner}</p>
+      <p><strong>Current Week:</strong> ${pool.currentWeek}</p>
+    `;
+  });
+
+  function savePools() {
+    const allPools = JSON.parse(localStorage.getItem("pools")) || [];
+    const idx = allPools.findIndex(p => p.id === pool.id);
+    allPools[idx] = pool;
+    localStorage.setItem("pools", JSON.stringify(allPools));
+  }
+  </script>
+</body>
+</html>
