@@ -99,9 +99,7 @@ button:disabled {
   z-index: 1000;
 }
 
-.sidebar.active {
-  left: 0;
-}
+.sidebar.active { left: 0; }
 
 .sidebar h2 {
   text-align: center;
@@ -150,7 +148,7 @@ button:disabled {
   cursor: pointer;
 }
 
-/* Overlay background */
+/* Overlay */
 .overlay {
   position: fixed;
   top: 0;
@@ -201,10 +199,7 @@ button:disabled {
   font-weight: 600;
   transition: 0.25s;
 }
-.team-btn:hover {
-  background: var(--primary);
-  color: white;
-}
+.team-btn:hover,
 .team-btn.selected {
   background: var(--primary);
   color: white;
@@ -248,7 +243,8 @@ button:disabled {
   box-shadow: 0 3px 10px rgba(0,0,0,0.1);
 }
 
-#adminGamesTable th, #adminGamesTable td {
+#adminGamesTable th,
+#adminGamesTable td {
   border: 1px solid #e6e6e6;
   padding: 10px;
   text-align: center;
@@ -266,9 +262,7 @@ button:disabled {
 /* ==============================
    STANDINGS PAGE
 ============================== */
-.standings-container {
-  text-align: center;
-}
+.standings-container { text-align: center; }
 
 #standingsTable {
   width: 100%;
@@ -370,10 +364,7 @@ main p {
   margin-bottom: 12px;
 }
 
-.pool-actions {
-  text-align: center;
-  margin-top: 30px;
-}
+.pool-actions { text-align: center; margin-top: 30px; }
 
 .pool-form {
   display: flex;
@@ -402,6 +393,7 @@ main p {
   outline: none;
   box-shadow: 0 0 5px rgba(0,122,255,0.3);
 }
+
 #membersTable {
   width: 100%;
   border-collapse: collapse;
@@ -411,7 +403,8 @@ main p {
   margin-top: 20px;
 }
 
-#membersTable th, #membersTable td {
+#membersTable th,
+#membersTable td {
   border: 1px solid #e6e6e6;
   padding: 10px;
   text-align: center;
@@ -508,7 +501,10 @@ main p {
   box-shadow: 0 6px 16px rgba(0,0,0,0.15);
 }
 
-.auth-btn:hover { background: var(--accent); transform: translateY(-1px); }
+.auth-btn:hover {
+  background: var(--accent);
+  transform: translateY(-1px);
+}
 
 .auth-note {
   margin-top: 16px;
@@ -521,4 +517,5 @@ main p {
   text-decoration: none;
   font-weight: 700;
 }
+
 .auth-link:hover { text-decoration: underline; }
