@@ -22,8 +22,30 @@
     </p>
   </div>
 
-  <script src="js/login.js"></script>
-  <script src="js/global.js"></script>
+  <script>
+  // ✅ Simple local login logic
+  document.getElementById("loginForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+
+    // Basic login validation using localStorage
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const user = users.find(u => u.email === email && u.password === password);
+
+    if (!user) {
+      alert("Invalid email or password.");
+      return;
+    }
+
+    // Save logged in user info
+    localStorage.setItem("loggedInUser", user.username || email);
+
+    // Redirect to the dashboard (not admin)
+    window.location.href = "dashboard.html";
+  });
+  </script>
 
 </body>
 </html>
