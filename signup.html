@@ -3,26 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sign Up - Survivor Pool</title> 
+  <title>Sign Up - Survivor Pool</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body class="login-body">
-  <div class="login-container">
-    <h1>NFL Survivor Pool</h1>
-    <h2>Create Account</h2>
+<body class="auth-body">
+  <div class="auth-card">
+    <h1 class="auth-title">NFL Survivor Pool</h1>
+    <h2 class="auth-subtitle">Create your account</h2>
 
-    <form id="signupForm">
-      <input type="text" id="firstName" placeholder="First Name" required />
-      <input type="text" id="lastName" placeholder="Last Name" required />
-      <input type="tel" id="phoneNumber" placeholder="Phone Number" required />
-      <input type="email" id="newEmail" placeholder="Email" required /> 
-      <input type="password" id="newPassword" placeholder="Create Password" required />
-      <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
-      <button type="submit">Sign Up</button>
+    <form id="signupForm" class="auth-form">
+      <label>Username</label>
+      <input type="text" id="signupUsername" placeholder="Dominic" required />
+
+      <label>Email</label>
+      <input type="email" id="signupEmail" placeholder="you@example.com" required />
+
+      <label>Password</label>
+      <input type="password" id="signupPassword" placeholder="At least 6 characters" minlength="6" required />
+
+      <button type="submit" class="auth-btn">Create Account</button>
     </form>
 
-    <p class="login-note">
-      Already have an account? <a href="index.html" class="link">Login here</a>
+    <p class="auth-note">
+      Already have an account?
+      <a href="index.html" class="auth-link">Log in</a>
     </p>
   </div>
 
