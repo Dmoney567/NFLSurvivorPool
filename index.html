@@ -6,46 +6,27 @@
   <title>Login - Survivor Pool</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body class="login-body">
-  <div class="login-container">
-    <h1>NFL Survivor Pool</h1>
-    <h2>Login</h2>
+<body class="auth-body">
+  <div class="auth-card">
+    <h1 class="auth-title">NFL Survivor Pool</h1>
+    <h2 class="auth-subtitle">Welcome back</h2>
 
-    <form id="loginForm">
-      <input type="email" id="loginEmail" placeholder="Email" required />
-      <input type="password" id="loginPassword" placeholder="Password" required />
-      <button type="submit">Login</button>
+    <form id="loginForm" class="auth-form">
+      <label>Email</label>
+      <input type="email" id="loginEmail" placeholder="you@example.com" required />
+
+      <label>Password</label>
+      <input type="password" id="loginPassword" placeholder="••••••••" required />
+
+      <button type="submit" class="auth-btn">Log In</button>
     </form>
 
-    <p class="login-note">
-      Don’t have an account? <a href="signup.html" class="link">Sign up here</a>
+    <p class="auth-note">
+      Don’t have an account?
+      <a href="signup.html" class="auth-link">Create one</a>
     </p>
   </div>
 
-  <script>
-  // ✅ Simple local login logic
-  document.getElementById("loginForm").addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const email = document.getElementById("loginEmail").value.trim();
-    const password = document.getElementById("loginPassword").value;
-
-    // Basic login validation using localStorage
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    const user = users.find(u => u.email === email && u.password === password);
-
-    if (!user) {
-      alert("Invalid email or password.");
-      return;
-    }
-
-    // Save logged in user info
-    localStorage.setItem("loggedInUser", user.username || email);
-
-    // Redirect to the dashboard (not admin)
-    window.location.href = "dashboard.html";
-  });
-  </script>
-
+  <script src="js/login.js"></script>
 </body>
 </html>
