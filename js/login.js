@@ -1,46 +1,38 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // Hardcoded list of admin emails
-  const adminEmails = ["dominic.ateek@yahoo.com", "kroifyatoma@yahoo.com"];
+// Simple localStorage login with admin support
+document.getElementById("loginForm").addEventListener("submit", (e) => {
+  e.preventDefault();
 
-  const form = document.getElementById("loginForm");
-  if (!form) return;
+  const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+  const password = document.getElementById("loginPassword").value;
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+  const user = users.find(u => u.email === email && u.password === password);
 
-    const email = document.getElementById("loginEmail").value.trim(); 
-    const password = document.getElementById("loginPassword").value.trim();
+  // List of admin emails (add or remove as needed)
+  const adminEmails = [
+    "dominic.ateek@yahoo.com", // example — replace with your actual one
+    "kroifyatoma@yahoo.com"
+  ];
 
-    if (!email || !password) {
-      alert("Please enter both email and password.");
-      return;
-    }
+  if (!user) {
+    alert("Invalid email or password.");
+    return;
+  }
 
-    const users = JSON.parse(localStorage.getItem("users")) || [];
+  // Save session info
+  localStorage.setItem("loggedInUser", user.username || email);
+  localStorage.setItem("loggedInEmail", email);
 
-    const validUser = users.find(
-      (user) => user.email === email && user.password === password
-    );
+  // Check if admin
+  const isAdmin = adminEmails.includes(email);
+  localStorage.setItem("isAdmin", isAdmin);
 
-    if (!validUser && !adminEmails.includes(email)) {
-      alert("❌ Invalid credentials. Please try again or sign up.");
-      return;
-    }
-
-    // Save logged-in user info
-    localStorage.setItem("currentUserEmail", email);
-
-    // Store first name for personalized greeting
-    if (validUser && validUser.firstName) {
-      localStorage.setItem("currentUserFirstName", validUser.firstName);
-    }
-
-    alert(`✅ Logged in as ${email}`);
-
-    if (adminEmails.includes(email)) {
-      window.location.href = "admin.html";
-    } else {
-      window.location.href = "dashboard.html";
-    }
-  });
+  // Redirects
+  if (isAdmin) {
+    alert(`Welcome back, Admin ${user.username}!`);
+    window.location.href = "admin.html";
+  } else {
+    const currentPoolId = localStorage.getItem("currentPoolId");
+    window.location.href = currentPoolId ? "dashboard.html" : "pools.html";
+  }
 });
