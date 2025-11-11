@@ -18,17 +18,19 @@
     <a href="pools.html">Pools</a>
     <a href="index.html">Logout</a>
   </div>
+
+  <!-- Hamburger + Overlay -->
   <button class="menu-btn" onclick="toggleSidebar()">☰</button>
   <div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
 
+  <!-- Main Content -->
   <main>
     <h2>My Pool Dashboard</h2>
 
     <div id="poolOverview" class="dashboard-card"></div>
-
     <div id="playerCard" class="dashboard-card"></div>
 
-    <div class="dashboard-actions">
+    <div class="dashboard-actions" style="text-align:center; margin-top:25px;">
       <button onclick="window.location.href='picks.html'">Make / Change Pick</button>
       <button onclick="window.location.href='standings.html'">View Standings</button>
       <button id="manageBtn" style="display:none;" onclick="window.location.href='managePool.html'">Manage Pool</button>
@@ -47,6 +49,13 @@
     const isActive = sidebar.classList.toggle("active");
     overlay.classList.toggle("active", isActive);
   }
+
+  // =============================
+  // Hide Admin link if not admin
+  // =============================
+  const isAdmin = localStorage.getItem("isAdmin") === "true";
+  const adminLink = document.querySelector('a[href="admin.html"]');
+  if (!isAdmin && adminLink) adminLink.style.display = "none";
 
   // =============================
   // Pool & Player Data
@@ -83,9 +92,11 @@
     const lastPick = player.picks.length ? player.picks[player.picks.length - 1] : null;
     const lastWeek = lastPick ? lastPick.week : "—";
     const lastTeam = lastPick ? lastPick.team : "—";
-    const lastResult = lastPick ? (lastPick.result === "win" ? "✅ Win" :
-                                   lastPick.result === "loss" ? "❌ Loss" :
-                                   "⏳ Pending") : "—";
+    const lastResult = lastPick ? (
+      lastPick.result === "win" ? "✅ Win" :
+      lastPick.result === "loss" ? "❌ Loss" :
+      "⏳ Pending"
+    ) : "—";
 
     playerCard.innerHTML = `
       <h3>My Performance</h3>
@@ -96,9 +107,7 @@
     `;
 
     // Show manage button if owner
-    if (player.role === "owner") {
-      manageBtn.style.display = "inline-block";
-    }
+    if (player.role === "owner") manageBtn.style.display = "inline-block";
   }
   </script>
 </body>
