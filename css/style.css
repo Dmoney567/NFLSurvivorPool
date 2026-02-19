@@ -11,6 +11,7 @@
   --success: #b5e7a0;
   --error: #ffb3b3;
   --locked: #e5e5e5;
+  --sidebar-width: 260px;
 }
 
 body {
@@ -27,11 +28,12 @@ body {
 ============================== */
 main {
   max-width: 1100px;
-  margin: 80px auto 100px auto;
+  margin: 40px auto 100px auto;
   padding: 40px;
   background: var(--card-bg);
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin-left: var(--sidebar-width);
 }
 
 h1, h2 {
@@ -46,7 +48,8 @@ footer {
   color: white;
   position: fixed;
   bottom: 0;
-  width: 100%;
+  left: var(--sidebar-width);
+  width: calc(100% - var(--sidebar-width));
   font-size: 14px;
 }
 
@@ -83,30 +86,29 @@ button:disabled {
 }
 
 /* ==============================
-   SIDEBAR
+   SIDEBAR (Always Visible)
 ============================== */
 .sidebar {
   position: fixed;
   top: 0;
-  left: -250px;
-  width: 250px;
-  height: 100%;
+  left: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
   background: var(--primary);
   color: white;
-  transition: left 0.3s ease;
-  padding-top: 60px;
+  padding-top: 30px;
   box-shadow: 2px 0 6px rgba(0, 0, 0, 0.2);
   z-index: 1000;
+  overflow-y: auto;
 }
-
-.sidebar.active { left: 0; }
 
 .sidebar h2 {
   text-align: center;
-  margin-bottom: 25px;
+  margin: 0 0 25px 0;
   font-size: 20px;
   letter-spacing: 0.5px;
   font-weight: 600;
+  color: white;
 }
 
 .sidebar a {
@@ -120,50 +122,11 @@ button:disabled {
 }
 
 .sidebar a:hover,
-.sidebar a.active {
+.sidebar a.active,
+.sidebar a[aria-current="page"] {
   background-color: var(--primary-dark);
   border-left: 4px solid var(--accent);
-}
-
-.menu-btn {
-  position: fixed;
-  top: 15px;
-  left: 15px;
-  font-size: 28px;
-  background: none;
-  color: var(--primary-dark);
-  border: none;
-  cursor: pointer;
-  z-index: 1100;
-}
-
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  font-size: 26px;
-  background: none;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-/* Overlay */
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease;
-  z-index: 900;
-}
-.overlay.active {
-  opacity: 1;
-  visibility: visible;
+  font-weight: 700;
 }
 
 /* ==============================
@@ -199,16 +162,19 @@ button:disabled {
   font-weight: 600;
   transition: 0.25s;
 }
+
 .team-btn:hover,
 .team-btn.selected {
   background: var(--primary);
   color: white;
 }
+
 .spread {
   font-weight: 600;
   font-size: 18px;
   color: #333;
 }
+
 .chosen-display {
   margin-top: 15px;
   font-weight: bold;
@@ -225,6 +191,7 @@ button:disabled {
   justify-content: center;
   margin: 20px 0 30px;
 }
+
 .admin-controls select,
 .admin-controls input {
   padding: 8px 10px;
@@ -394,33 +361,8 @@ main p {
   box-shadow: 0 0 5px rgba(0,122,255,0.3);
 }
 
-#membersTable {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-  margin-top: 20px;
-}
-
-#membersTable th,
-#membersTable td {
-  border: 1px solid #e6e6e6;
-  padding: 10px;
-  text-align: center;
-}
-
-#membersTable th {
-  background: var(--primary);
-  color: white;
-}
-
-#membersTable tr:nth-child(even) {
-  background: #f5f8ff;
-}
-
 /* ==============================
-   AUTH PAGES (Login / Signup)
+   AUTH PAGES
 ============================== */
 .auth-body {
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
@@ -437,19 +379,12 @@ main p {
   box-shadow: 0 10px 30px rgba(0,0,0,0.25);
   padding: 32px 28px;
   text-align: center;
-  animation: floatIn 300ms ease-out;
-}
-
-@keyframes floatIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 .auth-title {
   margin: 0 0 6px 0;
   color: var(--primary);
   font-size: 26px;
-  letter-spacing: 0.3px;
 }
 
 .auth-subtitle {
@@ -474,18 +409,12 @@ main p {
 }
 
 .auth-form input {
-  padding: 12px 12px;
+  padding: 12px;
   border-radius: 10px;
   border: 1px solid #d7dbe7;
   background: #f9fbff;
   font-size: 15px;
   outline: none;
-  transition: box-shadow .2s, border-color .2s;
-}
-
-.auth-form input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, .15);
 }
 
 .auth-btn {
@@ -497,72 +426,4 @@ main p {
   font-weight: 700;
   border: none;
   cursor: pointer;
-  transition: transform .12s ease, box-shadow .2s ease, background .2s ease;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
 }
-
-.auth-btn:hover {
-  background: var(--accent);
-  transform: translateY(-1px);
-}
-
-.auth-note {
-  margin-top: 16px;
-  font-size: 14px;
-  color: #555;
-}
-
-.auth-link {
-  color: var(--primary);
-  text-decoration: none;
-  font-weight: 700;
-}
-
-.auth-link:hover { text-decoration: underline; }
-
-/* --- Always-on sidebar layout --- */
-:root {
-  --sidebar-width: 260px;
-}
-
-/* If you have a wrapper, use it. Otherwise apply to body. */
-body {
-  margin: 0;
-}
-
-/* Sidebar */
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: var(--sidebar-width);
-  overflow-y: auto;
-  z-index: 1000;
-}
-
-/* Main content should not sit under sidebar */
-.main-content {
-  margin-left: var(--sidebar-width);
-  min-height: 100vh;
-}
-
-/* If you have a top header, keep it aligned */
-.header {
-  margin-left: var(--sidebar-width);
-}
-
-/* Optional: hide hamburger if it exists */
-.hamburger,
-.menu-toggle,
-#hamburgerBtn {
-  display: none !important;
-}
-
-/* --- Active link highlight --- */
-.sidebar a.active,
-.sidebar a[aria-current="page"] {
-  font-weight: 700;
-  text-decoration: none;
-  /* If you have a background / border style system, adjust these */
-  border-left: 4px s
