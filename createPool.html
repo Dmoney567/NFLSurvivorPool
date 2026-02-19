@@ -5,11 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Create Pool - Survivor Pool</title>
   <link rel="stylesheet" href="css/style.css" />
-</head> 
+</head>
 <body>
   <div id="sidebar" class="sidebar">
     <h2>NFL Survivor Pool</h2>
-    <a href="pools.html">← Back to Pools</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="picks.html">Picks</a>
+    <a href="standings.html">Standings</a>
+    <a href="admin.html">Admin</a>
+    <a href="pools.html">Pools</a>
+    <a href="index.html">Logout</a>
   </div>
 
   <main>
@@ -28,42 +33,40 @@
   <footer><p>&copy; 2025 NFL Survivor Pool</p></footer>
 
   <script>
-  function toggleSidebar() {
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("overlay");
-    const isActive = sidebar.classList.toggle("active");
-    overlay.classList.toggle("active", isActive);
-  }
+    document.getElementById("createForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("poolName").value.trim();
+      const password = document.getElementById("poolPassword").value;
 
-  document.getElementById("createForm").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const name = document.getElementById("poolName").value.trim();
-    const password = document.getElementById("poolPassword").value;
-    const username = localStorage.getItem("loggedInUser") || "Owner";
+      // NOTE: you use BOTH loggedInUser and currentUserEmail in different files.
+      // Keep your existing behavior for now:
+      const username = localStorage.getItem("loggedInUser") || "Owner";
 
-    const pools = JSON.parse(localStorage.getItem("pools")) || [];
-    if (pools.some(p => p.name === name)) {
-      alert("A pool with this name already exists!");
-      return;
-    }
+      const pools = JSON.parse(localStorage.getItem("pools")) || [];
+      if (pools.some(p => p.name === name)) {
+        alert("A pool with this name already exists!");
+        return;
+      }
 
-    const newPool = {
-      id: "pool_" + Date.now(),
-      name,
-      password,
-      owner: username,
-      members: [{ username, picks: [], alive: true, role: "owner" }],
-      matchups: [],
-      currentWeek: 1
-    };
+      const newPool = {
+        id: "pool_" + Date.now(),
+        name,
+        password,
+        owner: username,
+        members: [{ username, picks: [], alive: true, role: "owner" }],
+        matchups: [],
+        currentWeek: 1
+      };
 
-    pools.push(newPool);
-    localStorage.setItem("pools", JSON.stringify(pools));
-    localStorage.setItem("currentPoolId", newPool.id);
+      pools.push(newPool);
+      localStorage.setItem("pools", JSON.stringify(pools));
+      localStorage.setItem("currentPoolId", newPool.id);
 
-    alert("Pool created successfully!");
-    window.location.href = "pools.html";
-  });
+      alert("Pool created successfully!");
+      window.location.href = "pools.html";
+    });
   </script>
+
+  <script src="js/global.js"></script>
 </body>
 </html>
