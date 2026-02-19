@@ -31,3 +31,23 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "index.html";
   }
 });
+
+(function highlightActiveSidebarLink() {
+  const current = window.location.pathname.split("/").pop() || "index.html";
+
+  // Grab all sidebar links
+  const links = document.querySelectorAll(".sidebar a[href]");
+  links.forEach((a) => {
+    const href = (a.getAttribute("href") || "").split("/").pop();
+
+    // match exact file name (dashboard.html, picks.html, etc.)
+    if (href === current) {
+      a.classList.add("active");
+      a.setAttribute("aria-current", "page");
+    } else {
+      a.classList.remove("active");
+      a.removeAttribute("aria-current");
+    }
+  });
+})();
+
