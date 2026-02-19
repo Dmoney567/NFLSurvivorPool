@@ -519,3 +519,50 @@ main p {
 }
 
 .auth-link:hover { text-decoration: underline; }
+
+/* --- Always-on sidebar layout --- */
+:root {
+  --sidebar-width: 260px;
+}
+
+/* If you have a wrapper, use it. Otherwise apply to body. */
+body {
+  margin: 0;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: var(--sidebar-width);
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+/* Main content should not sit under sidebar */
+.main-content {
+  margin-left: var(--sidebar-width);
+  min-height: 100vh;
+}
+
+/* If you have a top header, keep it aligned */
+.header {
+  margin-left: var(--sidebar-width);
+}
+
+/* Optional: hide hamburger if it exists */
+.hamburger,
+.menu-toggle,
+#hamburgerBtn {
+  display: none !important;
+}
+
+/* --- Active link highlight --- */
+.sidebar a.active,
+.sidebar a[aria-current="page"] {
+  font-weight: 700;
+  text-decoration: none;
+  /* If you have a background / border style system, adjust these */
+  border-left: 4px s
